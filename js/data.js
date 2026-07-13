@@ -14,11 +14,11 @@ const SITE_DATA = {
   about: {
     en: {
       title: "About Me",
-      body: "A recent graduate in Art Education with a deep passion for multi-disciplinary arts instruction. Trained across a comprehensive spectrum of fine arts, heritage crafts, and contemporary design — from drawing, painting, and ceramics to textiles, woodwork, leathercraft, and mixed media. This breadth of training reflects not a lack of focus, but a deliberate commitment to becoming a versatile, resourceful educator capable of reaching every type of learner. Equipped with strong academic foundations, hands-on studio experience, and an unwavering dedication to making art education both rigorous and transformative."
+      body: "A recent graduate in Art Education with a deep passion for multi-disciplinary arts instruction. Trained across a comprehensive spectrum of fine arts, heritage crafts, and contemporary design, from drawing, painting, and ceramics to textiles, woodwork, leathercraft, and mixed media. This breadth of training reflects not a lack of focus, but a deliberate commitment to becoming a versatile, resourceful educator capable of reaching every type of learner. Equipped with strong academic foundations, hands-on studio experience, and an unwavering dedication to making art education both rigorous and transformative."
     },
     ar: {
       title: "نبذة عني",
-      body: "خريج حديث في قسم التربية الفنية، يحمل شغفاً عميقاً بالتعليم متعدد التخصصات في الفنون والحرف. تدرّبت على نطاق شامل يشمل الفنون التشكيلية والحرف التراثية والتصميم المعاصر — من الرسم واللوحة والخزف إلى النسيج والنجارة وعمل الجلود والوسائط المختلعة. هذا التنوع في التدريب ليس انعكاساً لافتقار للتركيز، بل التزام مدروس بأن أكون معلماً مرناً ومجداً قادر على الوصول إلى كل أنواع المتعلمين. أحمل أساساً أكاديمياً قوياً وخبرة عملية في الاستوديو وتفانياً لا يتزعزع في جعل التعليم الفني صارماً ومُحولاً للحياة في آن واحد."
+      body: "خريج حديث في قسم التربية الفنية، يحمل شغفاً عميقاً بالتعليم متعدد التخصصات في الفنون والحرف. تدرّبت على نطاق شامل يشمل الفنون التشكيلية والحرف التراثية والتصميم المعاصر، من الرسم واللوحة والخزف إلى النسيج والنجارة وعمل الجلود والوسائط المختلعة. هذا التنوع في التدريب ليس انعكاساً لافتقار للتركيز، بل التزام مدروس بأن أكون معلماً مرناً ومجداً قادر على الوصول إلى كل أنواع المتعلمين. أحمل أساساً أكاديمياً قوياً وخبرة عملية في الاستوديو وتفانياً لا يتزعزع في جعل التعليم الفني صارماً ومُحولاً للحياة في آن واحد."
     }
   },
   vision: {
@@ -113,13 +113,13 @@ const SITE_DATA = {
       id: "artwork-06",
       en: {
         title: "The Full Composition: Macro Context & Micro Analysis",
-        objective: "Learning through upcycling and assemblage — exploring sustainability through creativity.",
+        objective: "Learning through upcycling and assemblage, exploring sustainability through creativity.",
         techniques: "Working with recycled materials and found objects to create cohesive artistic compositions.",
         benefit: "Assemblage encourages problem-solving, resourcefulness, and innovation, developing a deeper understanding of texture, composition, and the value of giving new life to old materials."
       },
       ar: {
         title: "التكوين الكامل: السياق الكلي والتحليل الجزئي",
-        objective: "التعلم من خلال إعادة التدوير والتجميع — استكشاف الاستدامة عبر الإبداع.",
+        objective: "التعلم من خلال إعادة التدوير والتجميع، استكشاف الاستدامة عبر الإبداع.",
         techniques: "العمل بمواد معاد تدويرها وأشياء مُعثر عليها لإنشاء تركيبات فنية متماسكة.",
         benefit: "يشجع التجميع على حل المشكلات والابتكار والتجديد، وينمي فهماً أعمق للقوام والتكوين وقيمة إعطاء حياة جديدة للمواد القديمة."
       }
