@@ -1,0 +1,8 @@
+node_modules/
+assets/source/
+package-lock.json
+ocr-extract.mjs
+extracted-text.json
+optimize-images.mjs
+package.json
+*.traineddata
