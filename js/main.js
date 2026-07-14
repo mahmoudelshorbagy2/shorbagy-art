@@ -18,6 +18,10 @@ function setLang(lang) {
     el.alt = el.getAttribute(`data-${lang}-alt`);
   });
 
+  // Hero name always stays English
+  const heroNameText = document.getElementById('heroNameText');
+  if (heroNameText) heroNameText.textContent = SITE_DATA.hero.en.name;
+
   const toggle = document.querySelector('.lang-toggle');
   if (toggle) {
     toggle.querySelector('.toggle-text').textContent = lang === 'en' ? 'AR' : 'EN';
@@ -307,7 +311,12 @@ function initGalleryEffects() {
 function buildContent() {
   const d = SITE_DATA;
 
-  setText('heroName', d.hero.en.name, d.hero.ar.name);
+  // Hero name — always English, set directly on SVG text
+  const heroNameText = document.getElementById('heroNameText');
+  if (heroNameText) heroNameText.textContent = d.hero.en.name;
+  const heroNameWrapper = document.querySelector('.hero-name-wrapper');
+  if (heroNameWrapper) heroNameWrapper.setAttribute('aria-label', d.hero.en.name);
+
   setText('heroSubtitle', d.hero.en.subtitle, d.hero.ar.subtitle);
 
   setText('aboutTitle', d.about.en.title, d.about.ar.title);
@@ -428,12 +437,42 @@ function initGalleryScrollDepth() {
   items.forEach(item => observer.observe(item));
 }
 
+// ==================== BRUSH WRITING ANIMATION ====================
+function initBrushWriting() {
+  if (prefersReducedMotion.matches) return;
+
+  const textEl = document.getElementById('heroNameText');
+  if (!textEl) return;
+
+  // Wait for font to load, then calculate precise dash length
+  document.fonts.ready.then(() => {
+    const len = textEl.getComputedTextLength();
+    const dashLen = Math.ceil(len * 2.2);
+    textEl.style.strokeDasharray = dashLen;
+    textEl.style.strokeDashoffset = dashLen;
+
+    // Trigger reflow then animate stroke
+    textEl.getBoundingClientRect();
+    requestAnimationFrame(() => {
+      textEl.style.transition = 'stroke-dashoffset 2.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s';
+      textEl.style.strokeDashoffset = '0';
+
+      // After stroke completes, fill with gold
+      setTimeout(() => {
+        textEl.style.transition = 'fill 0.7s ease';
+        textEl.style.fill = '#c9a96e';
+      }, 3200);
+    });
+  });
+}
+
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
   buildContent();
   initLangToggle();
   initScrollReveal();
   initHeroCanvas();
+  initBrushWriting();
   initGalleryEffects();
   initGalleryScrollDepth();
 
