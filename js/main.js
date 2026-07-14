@@ -84,15 +84,15 @@ function initHeroCanvas() {
 
   function createParticles() {
     particles = [];
-    const count = Math.floor((w * h) / 14000);
+    const count = Math.floor((w * h) / 7000);
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * w,
         y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.15 - 0.06,
-        size: Math.random() * 2 + 0.3,
-        opacity: Math.random() * 0.3 + 0.05,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.18 - 0.07,
+        size: Math.random() * 3 + 0.5,
+        opacity: Math.random() * 0.35 + 0.08,
         life: Math.random() * 1000,
         pulse: Math.random() * Math.PI * 2
       });
@@ -101,26 +101,26 @@ function initHeroCanvas() {
 
   function createBrushStrokes() {
     brushStrokes = [];
-    const count = Math.min(5, Math.floor(w / 300));
+    const count = Math.min(8, Math.floor(w / 200));
     for (let i = 0; i < count; i++) {
       brushStrokes.push({
         points: generateBrushPath(),
         progress: Math.random(),
-        speed: 0.0008 + Math.random() * 0.0012,
-        opacity: 0.03 + Math.random() * 0.04,
-        width: 1 + Math.random() * 2
+        speed: 0.0006 + Math.random() * 0.001,
+        opacity: 0.04 + Math.random() * 0.05,
+        width: 1.5 + Math.random() * 3
       });
     }
   }
 
   function generateBrushPath() {
     const points = [];
-    const segs = 6 + Math.floor(Math.random() * 5);
-    let x = Math.random() * w * 0.6 + w * 0.2;
-    let y = Math.random() * h * 0.6 + h * 0.2;
+    const segs = 7 + Math.floor(Math.random() * 6);
+    let x = Math.random() * w * 0.7 + w * 0.15;
+    let y = Math.random() * h * 0.7 + h * 0.15;
     for (let i = 0; i < segs; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const len = 40 + Math.random() * 120;
+      const len = 60 + Math.random() * 160;
       points.push({ x, y });
       x += Math.cos(angle) * len;
       y += Math.sin(angle) * len;
@@ -130,17 +130,17 @@ function initHeroCanvas() {
 
   function createGeoShapes() {
     geoShapes = [];
-    const count = Math.min(4, Math.floor(w / 400));
+    const count = Math.min(6, Math.floor(w / 300));
     for (let i = 0; i < count; i++) {
       geoShapes.push({
         x: Math.random() * w,
         y: Math.random() * h,
-        size: 20 + Math.random() * 50,
+        size: 30 + Math.random() * 80,
         rotation: Math.random() * Math.PI * 2,
         rotSpeed: (Math.random() - 0.5) * 0.003,
         sides: 3 + Math.floor(Math.random() * 4),
         opacity: 0,
-        maxOpacity: 0.02 + Math.random() * 0.03,
+        maxOpacity: 0.03 + Math.random() * 0.04,
         fadeIn: Math.random() > 0.5,
         life: Math.random() * 1000
       });
@@ -168,11 +168,11 @@ function initHeroCanvas() {
     const time = Date.now() * 0.0003;
 
     // Ambient gold glow orbs
-    for (let i = 0; i < 3; i++) {
-      const x = w * 0.5 + Math.sin(time + i * 2.1) * w * 0.3;
-      const y = h * 0.5 + Math.cos(time * 0.7 + i * 1.5) * h * 0.25;
-      const gradient = ctx.createRadialGradient(x, y, 0, x, y, 250);
-      gradient.addColorStop(0, 'rgba(201, 169, 110, 0.018)');
+    for (let i = 0; i < 4; i++) {
+      const x = w * 0.5 + Math.sin(time + i * 2.1) * w * 0.35;
+      const y = h * 0.5 + Math.cos(time * 0.7 + i * 1.5) * h * 0.3;
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, 350);
+      gradient.addColorStop(0, 'rgba(201, 169, 110, 0.025)');
       gradient.addColorStop(1, 'transparent');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, w, h);
@@ -335,35 +335,34 @@ function setText(id, en, ar) {
   }
 }
 
-// Gallery layout patterns for variety (breaking zigzag repetition)
-const LAYOUT_CLASSES = ['', 'layout-full', 'layout-reverse', '', 'layout-full'];
-
 function buildGallery(artworks) {
   const container = document.getElementById('galleryGrid');
   if (!container) return;
 
   container.innerHTML = artworks.map((art, i) => {
-    const layoutClass = LAYOUT_CLASSES[i % LAYOUT_CLASSES.length];
-
     return `
-      <div class="gallery-item ${layoutClass}">
-        <div class="gallery-frame-wrapper">
-          <div class="gallery-spotlight"></div>
-          <div class="gallery-frame">
-            <picture>
-              <source srcset="assets/optimized/${art.id}-sm.webp 800w, assets/optimized/${art.id}-md.webp 1400w, assets/optimized/${art.id}.webp 2600w" type="image/webp">
-              <source srcset="assets/optimized/${art.id}-sm.jpg 800w, assets/optimized/${art.id}-md.jpg 1400w, assets/optimized/${art.id}.jpg 2600w" type="image/jpeg">
-              <img src="assets/optimized/${art.id}.webp" alt="${art.en.title}" data-en-alt="${art.en.title}" data-ar-alt="${art.ar.title}" loading="lazy" width="2600" height="1800">
-            </picture>
+      <div class="gallery-item" data-index="${i}">
+        <div class="gallery-inner">
+          <div class="gallery-frame-wrapper">
+            <div class="gallery-spotlight"></div>
+            <div class="gallery-frame">
+              <picture>
+                <source srcset="assets/optimized/${art.id}-sm.webp 800w, assets/optimized/${art.id}-md.webp 1400w, assets/optimized/${art.id}.webp 2600w" type="image/webp">
+                <source srcset="assets/optimized/${art.id}-sm.jpg 800w, assets/optimized/${art.id}-md.jpg 1400w, assets/optimized/${art.id}.jpg 2600w" type="image/jpeg">
+                <img src="assets/optimized/${art.id}.webp" alt="${art.en.title}" data-en-alt="${art.en.title}" data-ar-alt="${art.ar.title}" loading="lazy" width="2600" height="1800">
+              </picture>
+            </div>
           </div>
-        </div>
-        <div class="gallery-info">
-          <h3 data-en="${art.en.title}" data-ar="${art.ar.title}">${art.en.title}</h3>
-          <p data-en="${art.en.objective}" data-ar="${art.ar.objective}">${art.en.objective}</p>
+          <div class="gallery-info">
+            <h3 data-en="${art.en.title}" data-ar="${art.ar.title}">${art.en.title}</h3>
+            <p data-en="${art.en.objective}" data-ar="${art.ar.objective}">${art.en.objective}</p>
+          </div>
         </div>
       </div>
     `;
   }).join('');
+
+  buildProgressDots(artworks.length);
 }
 
 // Skills section: Card grid instead of table
@@ -381,24 +380,52 @@ function buildSkills(matrix) {
 }
 
 // ==================== GALLERY SCROLL DEPTH ====================
+let currentGalleryIndex = -1;
+
+function buildProgressDots(count) {
+  const container = document.getElementById('galleryProgress');
+  if (!container) return;
+  container.innerHTML = Array.from({ length: count }, (_, i) =>
+    `<div class="gallery-progress-dot" data-index="${i}"></div>`
+  ).join('');
+}
+
+function updateProgressDot(index) {
+  const dots = document.querySelectorAll('.gallery-progress-dot');
+  dots.forEach((dot, i) => {
+    dot.classList.toggle('active', i === index);
+  });
+}
+
 function initGalleryScrollDepth() {
-  if (prefersReducedMotion.matches) return;
+  if (prefersReducedMotion.matches) {
+    document.querySelectorAll('.gallery-item').forEach(el => el.classList.add('in-view'));
+    return;
+  }
 
   const items = document.querySelectorAll('.gallery-item');
   if (!items.length) return;
 
-  const depthObserver = new IntersectionObserver((entries) => {
+  const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
+      const idx = parseInt(entry.target.dataset.index, 10);
+
+      if (entry.isIntersecting && entry.intersectionRatio > 0.15) {
+        entry.target.classList.add('in-view');
+        entry.target.classList.remove('depth-exit');
+        currentGalleryIndex = idx;
+        updateProgressDot(idx);
+      } else if (!entry.isIntersecting) {
+        entry.target.classList.remove('in-view');
+        entry.target.classList.add('depth-exit');
       }
     });
   }, {
-    threshold: 0.08,
-    rootMargin: '0px 0px -40px 0px'
+    threshold: [0, 0.15, 0.5, 0.85],
+    rootMargin: '0px'
   });
 
-  items.forEach(item => depthObserver.observe(item));
+  items.forEach(item => observer.observe(item));
 }
 
 // ==================== INIT ====================
