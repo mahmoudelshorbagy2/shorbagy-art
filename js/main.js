@@ -454,14 +454,14 @@ function initBrushWriting() {
     // Trigger reflow then animate stroke
     textEl.getBoundingClientRect();
     requestAnimationFrame(() => {
-      textEl.style.transition = 'stroke-dashoffset 2.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s';
+      textEl.style.transition = 'stroke-dashoffset 5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s';
       textEl.style.strokeDashoffset = '0';
 
       // After stroke completes, fill with gold
       setTimeout(() => {
         textEl.style.transition = 'fill 0.7s ease';
         textEl.style.fill = '#c9a96e';
-      }, 3200);
+      }, 5400);
     });
   });
 }
