@@ -70,6 +70,8 @@ function initHeroCanvas() {
   const ctx = canvas.getContext('2d');
   let w, h;
   let particles = [];
+  let brushStrokes = [];
+  let geoShapes = [];
   let animId;
   let isPaused = false;
 
@@ -82,52 +84,161 @@ function initHeroCanvas() {
 
   function createParticles() {
     particles = [];
-    const count = Math.floor((w * h) / 18000);
+    const count = Math.floor((w * h) / 14000);
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * w,
         y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.12 - 0.08,
-        size: Math.random() * 1.8 + 0.4,
-        opacity: Math.random() * 0.25 + 0.04,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.15 - 0.06,
+        size: Math.random() * 2 + 0.3,
+        opacity: Math.random() * 0.3 + 0.05,
+        life: Math.random() * 1000,
+        pulse: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function createBrushStrokes() {
+    brushStrokes = [];
+    const count = Math.min(5, Math.floor(w / 300));
+    for (let i = 0; i < count; i++) {
+      brushStrokes.push({
+        points: generateBrushPath(),
+        progress: Math.random(),
+        speed: 0.0008 + Math.random() * 0.0012,
+        opacity: 0.03 + Math.random() * 0.04,
+        width: 1 + Math.random() * 2
+      });
+    }
+  }
+
+  function generateBrushPath() {
+    const points = [];
+    const segs = 6 + Math.floor(Math.random() * 5);
+    let x = Math.random() * w * 0.6 + w * 0.2;
+    let y = Math.random() * h * 0.6 + h * 0.2;
+    for (let i = 0; i < segs; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const len = 40 + Math.random() * 120;
+      points.push({ x, y });
+      x += Math.cos(angle) * len;
+      y += Math.sin(angle) * len;
+    }
+    return points;
+  }
+
+  function createGeoShapes() {
+    geoShapes = [];
+    const count = Math.min(4, Math.floor(w / 400));
+    for (let i = 0; i < count; i++) {
+      geoShapes.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        size: 20 + Math.random() * 50,
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.003,
+        sides: 3 + Math.floor(Math.random() * 4),
+        opacity: 0,
+        maxOpacity: 0.02 + Math.random() * 0.03,
+        fadeIn: Math.random() > 0.5,
         life: Math.random() * 1000
       });
     }
   }
 
+  function drawPolygon(cx, cy, radius, sides, rotation) {
+    ctx.beginPath();
+    for (let i = 0; i <= sides; i++) {
+      const angle = (i * 2 * Math.PI / sides) + rotation;
+      const px = cx + radius * Math.cos(angle);
+      const py = cy + radius * Math.sin(angle);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+  }
+
   function draw() {
     if (isPaused) return;
 
-    ctx.fillStyle = 'rgba(10, 10, 10, 0.08)';
+    ctx.fillStyle = 'rgba(10, 10, 10, 0.06)';
     ctx.fillRect(0, 0, w, h);
 
     const time = Date.now() * 0.0003;
+
+    // Ambient gold glow orbs
     for (let i = 0; i < 3; i++) {
       const x = w * 0.5 + Math.sin(time + i * 2.1) * w * 0.3;
-      const y = h * 0.5 + Math.cos(time * 0.7 + i * 1.5) * h * 0.2;
-      const gradient = ctx.createRadialGradient(x, y, 0, x, y, 200);
-      gradient.addColorStop(0, 'rgba(201, 169, 110, 0.015)');
+      const y = h * 0.5 + Math.cos(time * 0.7 + i * 1.5) * h * 0.25;
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, 250);
+      gradient.addColorStop(0, 'rgba(201, 169, 110, 0.018)');
       gradient.addColorStop(1, 'transparent');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, w, h);
     }
 
+    // Golden particles
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
       p.life += 1;
+      p.pulse += 0.015;
 
-      if (p.x < 0) p.x = w;
-      if (p.x > w) p.x = 0;
-      if (p.y < 0) p.y = h;
-      if (p.y > h) p.y = 0;
+      if (p.x < -10) p.x = w + 10;
+      if (p.x > w + 10) p.x = -10;
+      if (p.y < -10) p.y = h + 10;
+      if (p.y > h + 10) p.y = -10;
 
-      const alpha = p.opacity * (0.5 + 0.5 * Math.sin(p.life * 0.01));
+      const pulseAlpha = 0.6 + 0.4 * Math.sin(p.pulse);
+      const alpha = p.opacity * pulseAlpha;
       ctx.fillStyle = `rgba(201, 169, 110, ${alpha})`;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       ctx.fill();
+    });
+
+    // Flowing brush strokes
+    brushStrokes.forEach(s => {
+      s.progress += s.speed;
+      if (s.progress > 1) {
+        s.progress = 0;
+        s.points = generateBrushPath();
+      }
+
+      const pts = s.points;
+      const drawCount = Math.floor(pts.length * s.progress);
+      if (drawCount < 2) return;
+
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < drawCount; i++) {
+        const cp1x = (pts[i - 1].x + pts[i].x) / 2;
+        const cp1y = (pts[i - 1].y + pts[i].y) / 2;
+        ctx.quadraticCurveTo(pts[i - 1].x, pts[i - 1].y, cp1x, cp1y);
+      }
+      ctx.strokeStyle = `rgba(201, 169, 110, ${s.opacity})`;
+      ctx.lineWidth = s.width;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    });
+
+    // Geometric shapes fading in/out
+    geoShapes.forEach(g => {
+      g.rotation += g.rotSpeed;
+      g.life += 1;
+
+      const cycle = Math.sin(g.life * 0.004);
+      g.opacity = g.maxOpacity * Math.max(0, cycle);
+
+      if (g.opacity > 0.001) {
+        ctx.save();
+        drawPolygon(g.x, g.y, g.size, g.sides, g.rotation);
+        ctx.strokeStyle = `rgba(201, 169, 110, ${g.opacity})`;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+        ctx.restore();
+      }
     });
 
     animId = requestAnimationFrame(draw);
@@ -158,6 +269,8 @@ function initHeroCanvas() {
 
   resize();
   createParticles();
+  createBrushStrokes();
+  createGeoShapes();
   draw();
 
   let resizeTimeout;
@@ -166,6 +279,8 @@ function initHeroCanvas() {
     resizeTimeout = setTimeout(() => {
       resize();
       createParticles();
+      createBrushStrokes();
+      createGeoShapes();
     }, 150);
   });
 }
@@ -194,7 +309,6 @@ function buildContent() {
 
   setText('heroName', d.hero.en.name, d.hero.ar.name);
   setText('heroSubtitle', d.hero.en.subtitle, d.hero.ar.subtitle);
-  setText('heroTagline', d.hero.en.tagline, d.hero.ar.tagline);
 
   setText('aboutTitle', d.about.en.title, d.about.ar.title);
   setText('aboutBody', d.about.en.body, d.about.ar.body);
@@ -230,10 +344,9 @@ function buildGallery(artworks) {
 
   container.innerHTML = artworks.map((art, i) => {
     const layoutClass = LAYOUT_CLASSES[i % LAYOUT_CLASSES.length];
-    const delayClass = i % 2 === 0 ? '' : 'reveal-delay-1';
 
     return `
-      <div class="gallery-item ${layoutClass} reveal ${delayClass}">
+      <div class="gallery-item ${layoutClass}">
         <div class="gallery-frame-wrapper">
           <div class="gallery-spotlight"></div>
           <div class="gallery-frame">
@@ -246,15 +359,7 @@ function buildGallery(artworks) {
         </div>
         <div class="gallery-info">
           <h3 data-en="${art.en.title}" data-ar="${art.ar.title}">${art.en.title}</h3>
-
-          <span class="gallery-info-label" data-en="Objective" data-ar="الهدف">Objective</span>
           <p data-en="${art.en.objective}" data-ar="${art.ar.objective}">${art.en.objective}</p>
-
-          <span class="gallery-info-label" data-en="Techniques Taught" data-ar="التقنيات المستخدمة">Techniques Taught</span>
-          <p data-en="${art.en.techniques}" data-ar="${art.ar.techniques}">${art.en.techniques}</p>
-
-          <span class="gallery-info-label" data-en="Student Benefit" data-ar="فائدة الطالب">Student Benefit</span>
-          <p data-en="${art.en.benefit}" data-ar="${art.ar.benefit}">${art.en.benefit}</p>
         </div>
       </div>
     `;
@@ -275,6 +380,27 @@ function buildSkills(matrix) {
   `).join('');
 }
 
+// ==================== GALLERY SCROLL DEPTH ====================
+function initGalleryScrollDepth() {
+  if (prefersReducedMotion.matches) return;
+
+  const items = document.querySelectorAll('.gallery-item');
+  if (!items.length) return;
+
+  const depthObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.08,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  items.forEach(item => depthObserver.observe(item));
+}
+
 // ==================== INIT ====================
 document.addEventListener('DOMContentLoaded', () => {
   buildContent();
@@ -282,6 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initHeroCanvas();
   initGalleryEffects();
+  initGalleryScrollDepth();
 
   setLang('en');
 });
