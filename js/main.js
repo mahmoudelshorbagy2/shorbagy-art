@@ -19,8 +19,8 @@ function setLang(lang) {
   });
 
   // Hero name always stays English
-  const heroNameText = document.getElementById('heroNameText');
-  if (heroNameText) heroNameText.textContent = SITE_DATA.hero.en.name;
+  const heroName = document.getElementById('heroName');
+  if (heroName) heroName.textContent = SITE_DATA.hero.en.name;
 
   const toggle = document.querySelector('.lang-toggle');
   if (toggle) {
@@ -311,11 +311,12 @@ function initGalleryEffects() {
 function buildContent() {
   const d = SITE_DATA;
 
-  // Hero name — always English, set directly on SVG text
-  const heroNameText = document.getElementById('heroNameText');
-  if (heroNameText) heroNameText.textContent = d.hero.en.name;
-  const heroNameWrapper = document.querySelector('.hero-name-wrapper');
-  if (heroNameWrapper) heroNameWrapper.setAttribute('aria-label', d.hero.en.name);
+  // Hero name — always English, set directly on h1
+  const heroName = document.getElementById('heroName');
+  if (heroName) {
+    heroName.textContent = d.hero.en.name;
+    heroName.setAttribute('aria-label', d.hero.en.name);
+  }
 
   setText('heroSubtitle', d.hero.en.subtitle, d.hero.ar.subtitle);
 
@@ -439,31 +440,18 @@ function initGalleryScrollDepth() {
 
 // ==================== BRUSH WRITING ANIMATION ====================
 function initBrushWriting() {
-  if (prefersReducedMotion.matches) return;
+  const el = document.getElementById('heroName');
+  if (!el) return;
 
-  const textEl = document.getElementById('heroNameText');
-  if (!textEl) return;
+  if (prefersReducedMotion.matches) {
+    el.classList.add('filled');
+    return;
+  }
 
-  // Wait for font to load, then calculate precise dash length
-  document.fonts.ready.then(() => {
-    const len = textEl.getComputedTextLength();
-    const dashLen = Math.ceil(len * 2.2);
-    textEl.style.strokeDasharray = dashLen;
-    textEl.style.strokeDashoffset = dashLen;
-
-    // Trigger reflow then animate stroke
-    textEl.getBoundingClientRect();
-    requestAnimationFrame(() => {
-      textEl.style.transition = 'stroke-dashoffset 5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s';
-      textEl.style.strokeDashoffset = '0';
-
-      // After stroke completes, fill with gold
-      setTimeout(() => {
-        textEl.style.transition = 'fill 0.7s ease';
-        textEl.style.fill = '#c9a96e';
-      }, 5400);
-    });
-  });
+  // After the CSS reveal animation completes, fill the text with gold
+  setTimeout(() => {
+    el.classList.add('filled');
+  }, 1300);
 }
 
 // ==================== INIT ====================

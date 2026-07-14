@@ -5,9 +5,6 @@
                    frontend-design, web-design-guidelines, ui-ux-pro-max
    ================================================================ */
 
-/* ==================== FONTS ==================== */
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
-
 /* ==================== RESET ==================== */
 *, *::before, *::after {
   margin: 0;
@@ -241,43 +238,28 @@ section[id] {
   padding: var(--space-xl) var(--space-lg);
 }
 
-/* Hero name — SVG brush writing animation */
-.hero-name-wrapper {
-  position: relative;
+/* Hero name — brush writing reveal */
+.hero-name {
+  font-family: var(--font-script);
+  font-size: clamp(2.2rem, 10vw, 9rem);
+  line-height: 1.1;
+  text-align: center;
   width: 100%;
   margin-bottom: var(--space-sm);
-  animation: fadeInUp 1s var(--ease-out-expo) 0.1s both;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--gold);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: heroNameReveal 1s var(--ease-out-expo) 0.3s forwards;
 }
 
-.hero-name-svg {
-  width: 100%;
-  max-width: 950px;
-  height: auto;
-  overflow: visible;
-  display: block;
-  margin: 0 auto;
+.hero-name.filled {
+  color: var(--gold);
+  -webkit-text-stroke: 1px var(--gold);
+  transition: color 0.8s ease;
 }
 
-.hero-name-text {
-  font-family: var(--font-script);
-  font-size: 150px;
-  fill: transparent;
-  stroke: var(--gold);
-  stroke-width: 0.8px;
-  /* Initial state hidden — initBrushWriting() animates via JS transition */
-  stroke-dasharray: 3000;
-  stroke-dashoffset: 3000;
-}
-
-@keyframes brushStroke {
-  to { stroke-dashoffset: 0; }
-}
-
-@keyframes brushFill {
-  to { fill: var(--gold); }
-}
-
-[data-lang="ar"] .hero-name-text {
+[data-lang="ar"] .hero-name {
   font-family: var(--font-script);
 }
 
@@ -353,13 +335,10 @@ section[id] {
   margin: 0 auto;
   overflow: hidden;
   position: relative;
-  /* Double-Bezel Architecture */
-  border: 1px solid rgba(201, 169, 110, 0.25);
+  border: none;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 0 30px rgba(201, 169, 110, 0.12),
-    0 0 60px rgba(201, 169, 110, 0.06),
-    0 20px 60px rgba(0, 0, 0, 0.35);
+    0 0 50px rgba(201, 169, 110, 0.1),
+    0 0 100px rgba(201, 169, 110, 0.05);
 }
 
 .about-photo img {
@@ -811,12 +790,9 @@ section[id] {
     filter: none;
   }
 
-  .hero-name-text {
-    stroke-dasharray: none;
-    stroke-dashoffset: 0;
-    fill: var(--gold);
-    stroke: var(--gold);
-    animation: none;
+  .hero-name {
+    color: var(--gold);
+    -webkit-text-stroke: 1px var(--gold);
   }
 
   .hero-bg canvas {
@@ -883,15 +859,16 @@ section[id] {
   }
 
   .hero-content {
-    padding: var(--space-lg) var(--space-md);
+    padding: var(--space-lg) var(--space-sm);
   }
 
-  .hero-name-svg {
-    max-width: 600px;
+  .hero-name {
+    font-size: clamp(2.2rem, 13vw, 6rem);
+    padding: 0 var(--space-xs);
   }
 
-  .hero-name-text {
-    font-size: 120px;
+  .hero-subtitle {
+    font-size: clamp(0.85rem, 2.5vw, 1.2rem);
   }
 
   .social-links {
@@ -909,16 +886,13 @@ section[id] {
 }
 
 @media (max-width: 480px) {
-  .hero-name-svg {
-    max-width: 100%;
-  }
-
-  .hero-name-text {
-    font-size: 90px;
+  .hero-name {
+    font-size: clamp(2rem, 15vw, 5rem);
+    padding: 0 6px;
   }
 
   .hero-subtitle {
-    font-size: 0.95rem;
+    font-size: clamp(0.8rem, 2.5vw, 1.1rem);
   }
 
   .container {
@@ -926,7 +900,7 @@ section[id] {
   }
 
   .hero-content {
-    padding: var(--space-lg) var(--space-sm);
+    padding: var(--space-lg) var(--space-xs);
   }
 
   .gallery-item {
