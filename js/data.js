@@ -140,7 +140,7 @@ const SITE_DATA = {
       }
     },
     {
-      id: "artwork-08",
+      id: "artwork-09",
       en: {
         title: "Comprehensive Tie-Dye Techniques",
         objective: "Mastering various binding and folding methods to control complex resist-dyeing patterns.",
@@ -155,7 +155,7 @@ const SITE_DATA = {
       }
     },
     {
-      id: "artwork-09",
+      id: "artwork-10",
       en: {
         title: "The Anatomy of Form: 3D Visualization",
         objective: "Mastering organic sculpting and structural integrity.",
@@ -167,21 +167,6 @@ const SITE_DATA = {
         objective: "إتقان النحت العضوي والسلامة الهيكلية.",
         techniques: "تعامل الطين، والتحكم في النسب، وإنشاء نسيج سطحي عميق.",
         benefit: "يُشعل حماس المتعلمين الحسيين من خلال مواضيع غير تقليدية وجذابة للغاية، مما يجبر الدماغ على التوفيق بين الجاذبية والوزن والتوازن في الوقت الفعلي."
-      }
-    },
-    {
-      id: "artwork-10",
-      en: {
-        title: "Contemporary Ceramics & Subtractive Relief",
-        objective: "Understanding the spectrum between functional pottery and sculptural art.",
-        techniques: "Additive modeling (building up form) versus subtractive carving (defining dynamic ridges).",
-        benefit: "Develops profound fine motor skills and tactile sensitivity, teaching students how to manipulate form without compromising the structural integrity of the base material."
-      },
-      ar: {
-        title: "الخزف المعاصر والنحت التخفيضي",
-        objective: "فهم الطيف بين الفخار الوظيفي والفن التخزيتي.",
-        techniques: "النمذجة الإضافية (بناء الشكل) مقابل النحت التخفيضي (تحديد الحدود الديناميكية).",
-        benefit: "ينمي مهارات حركية دقيقة عميقة والحساسية الحسية، ويُعلّم الطلاب كيفية التلاعب بالشكل دون المساس بالسلامة الهيكلية للمادة الأساسية."
       }
     },
     {
@@ -257,6 +242,21 @@ const SITE_DATA = {
         objective: "إظهار الطيف الكامل للفنيات والمهارات المكتسبة.",
         techniques: "دمج تخصصات متعددة في مجموعة عمل متماسكة.",
         benefit: "يُبرز الرحلة التحولية من الملاحظة الأساسية إلى الإبداع متعدد التخصصات المتقدم."
+      }
+    },
+    {
+      id: "artwork-16",
+      en: {
+        title: "Fabric Frame Artistry",
+        objective: "Exploring textile patterns and fabric-based resist techniques.",
+        techniques: "Fabric folding, binding, dyeing, and pattern creation through textile manipulation.",
+        benefit: "Develops understanding of material behavior, color absorption patterns, and the intersection of craft and fine art."
+      },
+      ar: {
+        title: "فن براويز الأنسجة",
+        objective: "استكشاف أنماط الأنسجة وتقنيات المقاومة القائمة على القماش.",
+        techniques: "طي القماش، والربط، والصبغ، وإنشاء الأنماط من خلال التلاعب بالمنسوجات.",
+        benefit: "ينمي فهم سلوك المادة، وأنماط امتصاص اللون، وتقاطع الحرفة والفن الجميل."
       }
     }
   ],
