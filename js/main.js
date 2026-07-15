@@ -289,9 +289,6 @@ function initHeroCanvas() {
   });
 }
 
-// ==================== GALLERY TILT EFFECT ====================
-// (removed — replaced by 3D carousel)
-
 // ==================== BUILD DYNAMIC CONTENT ====================
 function buildContent() {
   const d = SITE_DATA;
@@ -331,25 +328,56 @@ function setText(id, en, ar) {
 }
 
 function buildCarousel(artworks) {
-  const ring = document.getElementById('carouselRing');
+  const ring = document.getElementById('mosaicRing');
   if (!ring) return;
 
-  carouselCount = artworks.length;
-  cardAngle = 360 / carouselCount;
+  const isMobile = window.innerWidth <= 768;
+  const isTiny = window.innerWidth <= 480;
 
-  ring.innerHTML = artworks.map((art, i) => `
-    <div class="carousel-card" data-index="${i}" role="button" tabindex="0" aria-label="${art.en.title}">
-      <picture>
-        <source srcset="assets/optimized/${art.id}-sm.webp 800w, assets/optimized/${art.id}-md.webp 1400w" type="image/webp">
-        <source srcset="assets/optimized/${art.id}-sm.jpg 800w, assets/optimized/${art.id}-md.jpg 1400w" type="image/jpeg">
-        <img src="assets/optimized/${art.id}-sm.webp" alt="${art.en.title}" loading="lazy" width="800" height="540">
-      </picture>
-      <div class="carousel-card-label">
-        <h3>${art.en.title}</h3>
-        <span>${art.en.techniques.split(',')[0]}</span>
+  const positions = [
+    { angle: 5,    dist: 0.34, w: 170, h: 225, rot: -4 },
+    { angle: 30,   dist: 0.41, w: 140, h: 185, rot: 3 },
+    { angle: 55,   dist: 0.36, w: 190, h: 250, rot: -2 },
+    { angle: 82,   dist: 0.44, w: 150, h: 200, rot: 6 },
+    { angle: 108,  dist: 0.35, w: 180, h: 240, rot: -5 },
+    { angle: 133,  dist: 0.42, w: 160, h: 210, rot: 2 },
+    { angle: 158,  dist: 0.38, w: 200, h: 260, rot: -3 },
+    { angle: 185,  dist: 0.43, w: 145, h: 195, rot: 7 },
+    { angle: 210,  dist: 0.36, w: 175, h: 230, rot: -6 },
+    { angle: 237,  dist: 0.40, w: 155, h: 205, rot: 4 },
+    { angle: 262,  dist: 0.45, w: 185, h: 245, rot: -7 },
+    { angle: 290,  dist: 0.37, w: 165, h: 215, rot: 1 },
+    { angle: 315,  dist: 0.42, w: 135, h: 180, rot: -8 },
+    { angle: 342,  dist: 0.39, w: 195, h: 255, rot: 5 },
+  ];
+
+  const scale = isTiny ? 0.55 : isMobile ? 0.7 : 1;
+
+  ring.innerHTML = artworks.map((art, i) => {
+    const p = positions[i % positions.length];
+    const rad = (p.angle * Math.PI) / 180;
+    const distFactor = isTiny ? 110 : isMobile ? 140 : 200;
+    const x = Math.cos(rad) * p.dist * distFactor;
+    const y = Math.sin(rad) * p.dist * distFactor * 0.85;
+    const w = Math.round(p.w * scale);
+    const h = Math.round(p.h * scale);
+
+    return `
+      <div class="mosaic-item" data-index="${i}" role="button" tabindex="0"
+           aria-label="${art.en.title}"
+           style="--item-x:${x}px;--item-y:${y}px;--item-w:${w}px;--item-h:${h}px;--item-rot:${p.rot}deg;--item-w-m:${Math.round(w * 0.75)}px;--item-h-m:${Math.round(h * 0.75)}px;">
+        <picture>
+          <source srcset="assets/optimized/${art.id}-sm.webp 800w, assets/optimized/${art.id}-md.webp 1400w" type="image/webp">
+          <source srcset="assets/optimized/${art.id}-sm.jpg 800w, assets/optimized/${art.id}-md.jpg 1400w" type="image/jpeg">
+          <img src="assets/optimized/${art.id}-sm.webp" alt="${art.en.title}" loading="lazy" width="${w}" height="${Math.round(h * 0.72)}">
+        </picture>
+        <div class="mosaic-item-label">
+          <h3>${art.en.title}</h3>
+          <span>${art.en.techniques.split(',')[0]}</span>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 // Skills section: Card grid instead of table
@@ -366,120 +394,62 @@ function buildSkills(matrix) {
   `).join('');
 }
 
-// ==================== 3D CAROUSEL ====================
-let carouselAngle = 0;
-let carouselSpeed = 0.12;
-let carouselPaused = false;
-let isDragging = false;
-let dragStartX = 0;
-let dragStartAngle = 0;
-let lastDragX = 0;
-let dragVelocity = 0;
-let carouselCount = 0;
-let cardAngle = 0;
-let highlightedIndex = -1;
-let carouselAnimId = null;
+// ==================== SCATTERED MOSAIC ====================
+let mosaicPaused = false;
 let dragMoved = false;
 
-function updateCarouselRadius() {
-  const scene = document.getElementById('carouselScene');
-  const ring = document.getElementById('carouselRing');
-  if (!scene || !ring || !carouselCount) return;
-
-  const w = window.innerWidth;
-  const cardW = ring.offsetWidth || 260;
-  const radius = Math.round((cardW / 2) / Math.tan(Math.PI / carouselCount));
-
-  ring.style.setProperty('--carousel-radius', radius + 'px');
-
-  ring.querySelectorAll('.carousel-card').forEach((card, i) => {
-    card.style.transform = `rotateY(${i * cardAngle}deg) translateZ(${radius}px)`;
-  });
-}
-
-function tickCarousel() {
-  if (!carouselPaused && !isDragging) {
-    carouselAngle += carouselSpeed;
-  }
-
-  const ring = document.getElementById('carouselRing');
-  if (ring) {
-    ring.style.transform = `rotateY(${carouselAngle}deg)`;
-  }
-
-  updateHighlight();
-  carouselAnimId = requestAnimationFrame(tickCarousel);
-}
-
-function updateHighlight() {
-  const cards = document.querySelectorAll('.carousel-card');
-  if (!cards.length) return;
-
-  const normalized = ((carouselAngle % 360) + 360) % 360;
-  const frontIdx = Math.round(normalized / cardAngle) % carouselCount;
-
-  if (frontIdx !== highlightedIndex) {
-    if (highlightedIndex >= 0 && cards[highlightedIndex]) {
-      cards[highlightedIndex].classList.remove('highlighted');
-    }
-    if (cards[frontIdx]) {
-      cards[frontIdx].classList.add('highlighted');
-    }
-    highlightedIndex = frontIdx;
-  }
-}
-
-function initCarousel() {
-  const scene = document.getElementById('carouselScene');
-  if (!scene) return;
-
-  updateCarouselRadius();
+function initMosaic() {
+  const viewport = document.getElementById('mosaicViewport');
+  if (!viewport) return;
 
   if (prefersReducedMotion.matches) return;
 
+  let touchTimeout;
+
   // Pause on hover (desktop)
-  scene.addEventListener('pointerenter', () => {
-    if (!isDragging) carouselPaused = true;
+  viewport.addEventListener('pointerenter', () => {
+    mosaicPaused = true;
   });
-  scene.addEventListener('pointerleave', () => {
-    if (!isDragging) carouselPaused = false;
+  viewport.addEventListener('pointerleave', () => {
+    mosaicPaused = false;
+    viewport.classList.remove('touch-active');
   });
 
-  // Drag to spin
-  scene.addEventListener('pointerdown', onDragStart);
-  window.addEventListener('pointermove', onDragMove);
-  window.addEventListener('pointerup', onDragEnd);
+  // Touch support (mobile): tap to activate, tap elsewhere to deactivate
+  viewport.addEventListener('touchstart', () => {
+    viewport.classList.add('touch-active');
+    clearTimeout(touchTimeout);
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', () => {
+    touchTimeout = setTimeout(() => {
+      viewport.classList.remove('touch-active');
+    }, 2000);
+  }, { passive: true });
 
   // Click/tap to open detail
-  scene.addEventListener('click', (e) => {
-    if (dragMoved) return;
-    const card = e.target.closest('.carousel-card');
-    if (card) {
-      openDetail(parseInt(card.dataset.index, 10));
+  viewport.addEventListener('click', (e) => {
+    if (dragMoved) { dragMoved = false; return; }
+    const item = e.target.closest('.mosaic-item');
+    if (item) {
+      openDetail(parseInt(item.dataset.index, 10));
     }
   });
 
   // Keyboard: Enter/Space to open detail
-  scene.addEventListener('keydown', (e) => {
+  viewport.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
-      const card = e.target.closest('.carousel-card');
-      if (card) {
+      const item = e.target.closest('.mosaic-item');
+      if (item) {
         e.preventDefault();
-        openDetail(parseInt(card.dataset.index, 10));
+        openDetail(parseInt(item.dataset.index, 10));
       }
     }
   });
 
-  // Resize handler
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(updateCarouselRadius, 150);
-  });
-
   // Close detail handlers
-  const closeBtn = document.getElementById('carouselDetailClose');
-  const backdrop = document.getElementById('carouselDetailBackdrop');
+  const closeBtn = document.getElementById('mosaicDetailClose');
+  const backdrop = document.getElementById('mosaicDetailBackdrop');
   if (closeBtn) closeBtn.addEventListener('click', closeDetail);
   if (backdrop) backdrop.addEventListener('click', closeDetail);
 
@@ -489,7 +459,7 @@ function initCarousel() {
 
   // Swipe down to close detail (mobile)
   let detailTouchStartY = 0;
-  const detail = document.getElementById('carouselDetail');
+  const detail = document.getElementById('mosaicDetail');
   if (detail) {
     detail.addEventListener('touchstart', (e) => {
       detailTouchStartY = e.touches[0].clientY;
@@ -500,44 +470,22 @@ function initCarousel() {
     }, { passive: true });
   }
 
-  // Start animation loop
-  tickCarousel();
-}
-
-function onDragStart(e) {
-  isDragging = true;
-  dragMoved = false;
-  dragStartX = e.clientX;
-  dragStartAngle = carouselAngle;
-  lastDragX = e.clientX;
-  dragVelocity = 0;
-  carouselPaused = true;
-  try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) { /* noop */ }
-}
-
-function onDragMove(e) {
-  if (!isDragging) return;
-  const dx = e.clientX - dragStartX;
-  if (Math.abs(dx) > 5) dragMoved = true;
-  carouselAngle = dragStartAngle + dx * 0.3;
-  dragVelocity = e.clientX - lastDragX;
-  lastDragX = e.clientX;
-}
-
-function onDragEnd() {
-  if (!isDragging) return;
-  isDragging = false;
-  carouselAngle += dragVelocity * 2;
-  carouselPaused = false;
+  // Rebuild on resize (debounced)
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => buildCarousel(SITE_DATA.artworks), 200);
+  });
 }
 
 function openDetail(index) {
   const art = SITE_DATA.artworks[index];
   if (!art) return;
 
-  const detail = document.getElementById('carouselDetail');
-  const imageContainer = document.getElementById('carouselDetailImage');
-  const infoContainer = document.getElementById('carouselDetailInfo');
+  const detail = document.getElementById('mosaicDetail');
+  const imageContainer = document.getElementById('mosaicDetailImage');
+  const infoContainer = document.getElementById('mosaicDetailInfo');
+  const closeBtn = document.getElementById('mosaicDetailClose');
   if (!detail || !imageContainer || !infoContainer) return;
 
   const lang = currentLang === 'ar' ? 'ar' : 'en';
@@ -576,25 +524,25 @@ function openDetail(index) {
     </div>
   `;
 
-  carouselPaused = true;
+  mosaicPaused = true;
 
   if (document.startViewTransition) {
     document.startViewTransition(() => {
       detail.classList.add('open');
       detail.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
-      closeBtn.focus();
+      if (closeBtn) closeBtn.focus();
     });
   } else {
     detail.classList.add('open');
     detail.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    closeBtn.focus();
+    if (closeBtn) closeBtn.focus();
   }
 }
 
 function closeDetail() {
-  const detail = document.getElementById('carouselDetail');
+  const detail = document.getElementById('mosaicDetail');
   if (!detail || !detail.classList.contains('open')) return;
 
   if (document.startViewTransition) {
@@ -609,7 +557,7 @@ function closeDetail() {
     document.body.style.overflow = '';
   }
 
-  setTimeout(() => { carouselPaused = false; }, 500);
+  setTimeout(() => { mosaicPaused = false; }, 500);
 }
 
 // ==================== BRUSH WRITING ANIMATION ====================
@@ -635,7 +583,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initHeroCanvas();
   initBrushWriting();
-  initCarousel();
+  initMosaic();
 
   setLang('en');
 });

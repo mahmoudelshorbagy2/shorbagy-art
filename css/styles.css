@@ -418,107 +418,134 @@ section[id] {
   max-width: 55ch;
 }
 
-/* ==================== 3D CAROUSEL GALLERY ==================== */
-.carousel-section {
+/* ==================== SCATTERED MOSAIC GALLERY ==================== */
+.mosaic-section {
   background: var(--bg);
   padding-bottom: var(--space-xl);
 }
 
-.carousel-header {
+.mosaic-header {
   padding: var(--space-2xl) 0 var(--space-lg);
 }
 
-.carousel-scene {
+.mosaic-viewport {
   width: 100%;
-  height: 420px;
-  perspective: 1200px;
-  perspective-origin: 50% 50%;
+  height: 620px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   position: relative;
-  cursor: grab;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: pan-y;
 }
 
-.carousel-scene:active {
-  cursor: grabbing;
-}
-
-.carousel-ring {
-  width: 260px;
-  height: 340px;
+.mosaic-ring {
   position: relative;
-  transform-style: preserve-3d;
-  will-change: transform;
-  transition: none;
-}
-
-.carousel-card {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  animation: mosaic-spin 120s linear infinite;
+  will-change: transform;
+}
+
+.mosaic-viewport:hover .mosaic-ring,
+.mosaic-viewport.touch-active .mosaic-ring {
+  animation-play-state: paused;
+}
+
+.mosaic-viewport:hover .mosaic-item,
+.mosaic-viewport.touch-active .mosaic-item {
+  animation-play-state: paused;
+}
+
+@keyframes mosaic-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.mosaic-item {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--item-w, 160px);
+  height: var(--item-h, 210px);
+  margin-left: calc(var(--item-w, 160px) / -2);
+  margin-top: calc(var(--item-h, 210px) / -2);
+  transform: translate(var(--item-x, 0), var(--item-y, 0)) rotate(var(--item-rot, 0deg));
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--surface);
   border: 1px solid var(--frame-border);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 8px 40px rgba(0, 0, 0, 0.4);
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.4);
   cursor: pointer;
-  transition: box-shadow 0.4s var(--ease-out-expo), border-color 0.4s var(--ease-out-expo);
   -webkit-tap-highlight-color: transparent;
+  transition:
+    opacity 0.4s var(--ease-out-expo),
+    filter 0.4s var(--ease-out-expo),
+    box-shadow 0.4s var(--ease-out-expo),
+    border-color 0.4s var(--ease-out-expo);
+  /* Counter-rotate to stay upright while ring spins */
+  animation: mosaic-counter-spin 120s linear infinite;
+  will-change: transform, opacity, filter;
 }
 
-.carousel-card img {
+@keyframes mosaic-counter-spin {
+  from { transform: translate(var(--item-x, 0), var(--item-y, 0)) rotate(calc(var(--item-rot, 0deg) + 0deg)); }
+  to { transform: translate(var(--item-x, 0), var(--item-y, 0)) rotate(calc(var(--item-rot, 0deg) - 360deg)); }
+}
+
+.mosaic-item img {
   width: 100%;
-  height: 240px;
+  height: 72%;
   object-fit: cover;
   display: block;
   pointer-events: none;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
-.carousel-card-label {
-  padding: 12px 16px;
+.mosaic-item-label {
+  padding: 10px 12px;
   text-align: center;
 }
 
-.carousel-card-label h3 {
+.mosaic-item-label h3 {
   font-family: var(--font-display);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: var(--gold);
   line-height: 1.3;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.carousel-card-label span {
-  font-size: var(--text-xs);
-  color: var(--text-secondary);
+.mosaic-item-label span {
+  font-size: 0.65rem;
+  color: var(--text-muted);
 }
 
-/* Highlighted card (hover / closest to front) */
-.carousel-card.highlighted {
-  border-color: rgba(201, 169, 110, 0.35);
+/* Hover state: dim siblings, highlight hovered */
+.mosaic-viewport:hover .mosaic-item,
+.mosaic-viewport.touch-active .mosaic-item {
+  opacity: 0.35;
+  filter: saturate(0.6);
+}
+
+.mosaic-viewport:hover .mosaic-item:hover,
+.mosaic-viewport.touch-active .mosaic-item.touch-active {
+  opacity: 1;
+  filter: saturate(1) brightness(1.05) scale(1.03);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 12px 50px rgba(0, 0, 0, 0.5),
-    0 0 40px rgba(201, 169, 110, 0.12),
-    0 0 80px rgba(201, 169, 110, 0.06);
-  border-color: var(--gold-dim);
+    0 12px 48px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(201, 169, 110, 0.15),
+    0 0 80px rgba(201, 169, 110, 0.08);
+  border-color: rgba(201, 169, 110, 0.3);
+  z-index: 10;
 }
 
 /* Hint text */
-.carousel-hint {
+.mosaic-hint {
   text-align: center;
   color: var(--text-muted);
   font-size: var(--text-xs);
@@ -528,7 +555,7 @@ section[id] {
 }
 
 /* ==================== DETAIL OVERLAY ==================== */
-.carousel-detail {
+.mosaic-detail {
   position: fixed;
   inset: 0;
   z-index: 5000;
@@ -540,12 +567,12 @@ section[id] {
   transition: opacity 0.5s var(--ease-out-expo), visibility 0.5s;
 }
 
-.carousel-detail.open {
+.mosaic-detail.open {
   opacity: 1;
   visibility: visible;
 }
 
-.carousel-detail-backdrop {
+.mosaic-detail-backdrop {
   position: absolute;
   inset: 0;
   background: rgba(5, 5, 5, 0.92);
@@ -553,7 +580,7 @@ section[id] {
   -webkit-backdrop-filter: blur(20px);
 }
 
-.carousel-detail-close {
+.mosaic-detail-close {
   position: fixed;
   top: 24px;
   right: 24px;
@@ -574,18 +601,18 @@ section[id] {
   -webkit-backdrop-filter: blur(12px);
 }
 
-.carousel-detail-close:hover {
+.mosaic-detail-close:hover {
   background: var(--gold);
   border-color: var(--gold);
   color: var(--bg);
   transform: scale(1.08);
 }
 
-.carousel-detail-close:active {
+.mosaic-detail-close:active {
   transform: scale(0.95);
 }
 
-.carousel-detail-inner {
+.mosaic-detail-inner {
   position: relative;
   z-index: 5001;
   display: grid;
@@ -601,11 +628,11 @@ section[id] {
   transition: transform 0.6s var(--ease-out-expo);
 }
 
-.carousel-detail.open .carousel-detail-inner {
+.mosaic-detail.open .mosaic-detail-inner {
   transform: scale(1) translateY(0);
 }
 
-.carousel-detail-image {
+.mosaic-detail-image {
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--frame-border);
@@ -614,20 +641,20 @@ section[id] {
     0 20px 80px rgba(0, 0, 0, 0.5);
 }
 
-.carousel-detail-image img {
+.mosaic-detail-image img {
   width: 100%;
   height: auto;
   display: block;
 }
 
-.carousel-detail-info {
+.mosaic-detail-info {
   padding: var(--space-md) 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.carousel-detail-info .detail-title {
+.mosaic-detail-info .detail-title {
   font-family: var(--font-display);
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   color: var(--gold);
@@ -635,14 +662,14 @@ section[id] {
   line-height: 1.2;
 }
 
-.carousel-detail-info .detail-meta {
+.mosaic-detail-info .detail-meta {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
   margin-bottom: var(--space-md);
 }
 
-.carousel-detail-info .detail-tag {
+.mosaic-detail-info .detail-tag {
   font-size: var(--text-xs);
   color: var(--text-secondary);
   border: 1px solid var(--frame-border);
@@ -651,11 +678,11 @@ section[id] {
   background: var(--surface);
 }
 
-.carousel-detail-info .detail-section {
+.mosaic-detail-info .detail-section {
   margin-bottom: var(--space-md);
 }
 
-.carousel-detail-info .detail-section h4 {
+.mosaic-detail-info .detail-section h4 {
   font-family: var(--font-display);
   font-size: var(--text-sm);
   color: var(--gold-light);
@@ -663,15 +690,10 @@ section[id] {
   font-weight: 600;
 }
 
-.carousel-detail-info .detail-section p {
+.mosaic-detail-info .detail-section p {
   color: var(--text-secondary);
   font-size: var(--text-sm);
   line-height: 1.8;
-}
-
-/* Swipe-down hint on mobile */
-.carousel-detail .swipe-hint {
-  display: none;
 }
 
 /* ==================== SKILLS MATRIX (Card Grid) ==================== */
@@ -859,38 +881,28 @@ section[id] {
     display: none;
   }
 
-  .carousel-ring {
-    transform: none !important;
+  .mosaic-ring {
+    animation: none !important;
   }
 
-  .carousel-card {
-    transform: none !important;
+  .mosaic-item {
+    animation: none !important;
     position: relative;
     display: inline-block;
     margin: 8px;
   }
 
-  .carousel-scene {
+  .mosaic-viewport {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     height: auto;
-    perspective: none;
     overflow: visible;
     gap: 12px;
     padding: var(--space-md);
   }
 
-  .carousel-ring {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
-    width: auto;
-    height: auto;
-  }
-
-  .carousel-card img {
+  .mosaic-item img {
     height: 180px;
   }
 
@@ -907,21 +919,30 @@ section[id] {
     gap: var(--space-lg);
   }
 
-  .carousel-scene {
-    height: 360px;
-    perspective: 900px;
+  .mosaic-viewport {
+    height: 480px;
   }
 
-  .carousel-ring {
-    width: 200px;
-    height: 280px;
+  .mosaic-item {
+    width: var(--item-w-m, 120px);
+    height: var(--item-h-m, 160px);
+    margin-left: calc(var(--item-w-m, 120px) / -2);
+    margin-top: calc(var(--item-h-m, 160px) / -2);
   }
 
-  .carousel-card img {
-    height: 180px;
+  .mosaic-item img {
+    height: 68%;
   }
 
-  .carousel-detail-inner {
+  .mosaic-item-label {
+    padding: 6px 8px;
+  }
+
+  .mosaic-item-label h3 {
+    font-size: 0.6rem;
+  }
+
+  .mosaic-detail-inner {
     grid-template-columns: 1fr;
     gap: var(--space-md);
     width: 94%;
@@ -929,16 +950,16 @@ section[id] {
     padding: var(--space-lg) 0;
   }
 
-  .carousel-detail-image {
+  .mosaic-detail-image {
     max-height: 40vh;
   }
 
-  .carousel-detail-image img {
+  .mosaic-detail-image img {
     max-height: 40vh;
     object-fit: contain;
   }
 
-  .carousel-detail-close {
+  .mosaic-detail-close {
     top: 16px;
     right: 16px;
     width: 42px;
@@ -946,7 +967,7 @@ section[id] {
     font-size: 1.3rem;
   }
 
-  .carousel-hint {
+  .mosaic-hint {
     font-size: 0.65rem;
   }
 
@@ -1006,34 +1027,23 @@ section[id] {
     padding: var(--space-lg) var(--space-xs);
   }
 
-  .carousel-scene {
-    height: 320px;
-    perspective: 750px;
+  .mosaic-viewport {
+    height: 400px;
   }
 
-  .carousel-ring {
-    width: 170px;
-    height: 250px;
+  .mosaic-item {
+    width: var(--item-w-m, 100px);
+    height: var(--item-h-m, 135px);
+    margin-left: calc(var(--item-w-m, 100px) / -2);
+    margin-top: calc(var(--item-h-m, 135px) / -2);
   }
 
-  .carousel-card img {
-    height: 155px;
-  }
-
-  .carousel-card-label {
-    padding: 8px 10px;
-  }
-
-  .carousel-card-label h3 {
-    font-size: 0.7rem;
-  }
-
-  .carousel-detail-inner {
+  .mosaic-detail-inner {
     width: 96%;
     gap: var(--space-sm);
   }
 
-  .carousel-detail-info .detail-title {
+  .mosaic-detail-info .detail-title {
     font-size: 1.3rem;
   }
 }
