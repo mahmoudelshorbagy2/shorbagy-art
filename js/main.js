@@ -334,21 +334,24 @@ function buildCarousel(artworks) {
   const isMobile = window.innerWidth <= 768;
   const isTiny = window.innerWidth <= 480;
 
+  const ringW = ring.clientWidth || window.innerWidth;
+  const ringH = ring.clientHeight || 620;
+
   const positions = [
-    { angle: 5,    dist: 0.34, w: 170, h: 225, rot: -4 },
-    { angle: 30,   dist: 0.41, w: 140, h: 185, rot: 3 },
-    { angle: 55,   dist: 0.36, w: 190, h: 250, rot: -2 },
-    { angle: 82,   dist: 0.44, w: 150, h: 200, rot: 6 },
-    { angle: 108,  dist: 0.35, w: 180, h: 240, rot: -5 },
-    { angle: 133,  dist: 0.42, w: 160, h: 210, rot: 2 },
-    { angle: 158,  dist: 0.38, w: 200, h: 260, rot: -3 },
-    { angle: 185,  dist: 0.43, w: 145, h: 195, rot: 7 },
-    { angle: 210,  dist: 0.36, w: 175, h: 230, rot: -6 },
-    { angle: 237,  dist: 0.40, w: 155, h: 205, rot: 4 },
-    { angle: 262,  dist: 0.45, w: 185, h: 245, rot: -7 },
-    { angle: 290,  dist: 0.37, w: 165, h: 215, rot: 1 },
-    { angle: 315,  dist: 0.42, w: 135, h: 180, rot: -8 },
-    { angle: 342,  dist: 0.39, w: 195, h: 255, rot: 5 },
+    { angle: 5,    dist: 0.38, w: 170, h: 225, rot: -4 },
+    { angle: 30,   dist: 0.44, w: 140, h: 185, rot: 3 },
+    { angle: 55,   dist: 0.40, w: 190, h: 250, rot: -2 },
+    { angle: 82,   dist: 0.48, w: 150, h: 200, rot: 6 },
+    { angle: 108,  dist: 0.36, w: 180, h: 240, rot: -5 },
+    { angle: 133,  dist: 0.46, w: 160, h: 210, rot: 2 },
+    { angle: 158,  dist: 0.42, w: 200, h: 260, rot: -3 },
+    { angle: 185,  dist: 0.47, w: 145, h: 195, rot: 7 },
+    { angle: 210,  dist: 0.39, w: 175, h: 230, rot: -6 },
+    { angle: 237,  dist: 0.45, w: 155, h: 205, rot: 4 },
+    { angle: 262,  dist: 0.50, w: 185, h: 245, rot: -7 },
+    { angle: 290,  dist: 0.41, w: 165, h: 215, rot: 1 },
+    { angle: 315,  dist: 0.47, w: 135, h: 180, rot: -8 },
+    { angle: 342,  dist: 0.43, w: 195, h: 255, rot: 5 },
   ];
 
   const scale = isTiny ? 0.55 : isMobile ? 0.7 : 1;
@@ -356,9 +359,10 @@ function buildCarousel(artworks) {
   ring.innerHTML = artworks.map((art, i) => {
     const p = positions[i % positions.length];
     const rad = (p.angle * Math.PI) / 180;
-    const distFactor = isTiny ? 110 : isMobile ? 140 : 200;
-    const x = Math.cos(rad) * p.dist * distFactor;
-    const y = Math.sin(rad) * p.dist * distFactor * 0.85;
+    const radiusX = ringW * 0.42;
+    const radiusY = ringH * 0.40;
+    const x = Math.cos(rad) * p.dist * radiusX;
+    const y = Math.sin(rad) * p.dist * radiusY;
     const w = Math.round(p.w * scale);
     const h = Math.round(p.h * scale);
 
