@@ -856,19 +856,26 @@ section[id] {
 
   .mosaic-detail-inner {
     grid-template-columns: 1fr;
-    gap: var(--space-md);
-    width: 94%;
-    max-height: 90vh;
-    padding: var(--space-lg) 0;
+    gap: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    padding: 0;
+    border-radius: 0;
   }
 
   .mosaic-detail-image {
-    max-height: 40vh;
+    max-height: none;
+    flex: 1;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
   }
 
   .mosaic-detail-image img {
-    max-height: 40vh;
-    object-fit: contain;
+    max-height: none;
+    height: 100%;
+    object-fit: cover;
   }
 
   .mosaic-detail-close {
@@ -877,6 +884,12 @@ section[id] {
     width: 42px;
     height: 42px;
     font-size: 1.3rem;
+  }
+
+  .mosaic-detail-info {
+    padding: var(--space-md);
+    overflow-y: auto;
+    flex: 0 0 auto;
   }
 
   .gallery-hint {
@@ -945,8 +958,8 @@ section[id] {
   }
 
   .mosaic-detail-inner {
-    width: 96%;
-    gap: var(--space-sm);
+    width: 100%;
+    gap: 0;
   }
 
   .mosaic-detail-info .detail-title {
