@@ -78,15 +78,27 @@
       </div>
     </section>
 
-    <!-- ==================== GALLERY ==================== -->
-    <section class="gallery" id="gallery">
-      <div class="gallery-header container">
+    <!-- ==================== 3D CAROUSEL GALLERY ==================== -->
+    <section class="carousel-section" id="gallery" aria-label="Portfolio Gallery">
+      <div class="carousel-header container">
         <h2 class="section-title reveal" data-en="Portfolio Gallery" data-ar="معرض الأعمال">Portfolio Gallery</h2>
         <div class="section-divider reveal"></div>
       </div>
-      <div class="gallery-viewport" id="galleryGrid"></div>
+      <div class="carousel-scene" id="carouselScene">
+        <div class="carousel-ring" id="carouselRing"></div>
+      </div>
+      <p class="carousel-hint" id="carouselHint" data-en="Drag to explore · Tap to view details" data-ar="اسحب للاستكشاف · اضغط لعرض التفاصيل">Drag to explore · Tap to view details</p>
     </section>
-    <div class="gallery-progress" id="galleryProgress" aria-hidden="true"></div>
+
+    <!-- Detail Overlay -->
+    <div class="carousel-detail" id="carouselDetail" aria-hidden="true" role="dialog" aria-label="Artwork detail view">
+      <button class="carousel-detail-close" id="carouselDetailClose" aria-label="Close detail view">&times;</button>
+      <div class="carousel-detail-backdrop" id="carouselDetailBackdrop"></div>
+      <div class="carousel-detail-inner">
+        <div class="carousel-detail-image" id="carouselDetailImage"></div>
+        <div class="carousel-detail-info" id="carouselDetailInfo"></div>
+      </div>
+    </div>
 
     <!-- ==================== SKILLS MATRIX ==================== -->
     <section class="section skills-matrix" id="skills">

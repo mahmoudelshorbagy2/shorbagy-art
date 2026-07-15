@@ -290,22 +290,7 @@ function initHeroCanvas() {
 }
 
 // ==================== GALLERY TILT EFFECT ====================
-function initGalleryEffects() {
-  if (prefersReducedMotion.matches) return;
-
-  document.querySelectorAll('.gallery-frame').forEach(frame => {
-    frame.addEventListener('mousemove', (e) => {
-      const rect = frame.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      frame.style.transform = `perspective(1000px) rotateY(${x * 4}deg) rotateX(${-y * 4}deg) translateY(-4px) scale(1.01)`;
-    });
-
-    frame.addEventListener('mouseleave', () => {
-      frame.style.transform = '';
-    });
-  });
-}
+// (removed — replaced by 3D carousel)
 
 // ==================== BUILD DYNAMIC CONTENT ====================
 function buildContent() {
@@ -327,7 +312,7 @@ function buildContent() {
   setText('visionSubtitle', d.vision.en.subtitle, d.vision.ar.subtitle);
   setText('visionBody', d.vision.en.body, d.vision.ar.body);
 
-  buildGallery(d.artworks);
+  buildCarousel(d.artworks);
 
   setText('matrixTitle', d.skillsMatrix.en.title, d.skillsMatrix.ar.title);
   setText('matrixClosing', d.skillsMatrix.en.closing, d.skillsMatrix.ar.closing);
@@ -345,34 +330,26 @@ function setText(id, en, ar) {
   }
 }
 
-function buildGallery(artworks) {
-  const container = document.getElementById('galleryGrid');
-  if (!container) return;
+function buildCarousel(artworks) {
+  const ring = document.getElementById('carouselRing');
+  if (!ring) return;
 
-  container.innerHTML = artworks.map((art, i) => {
-    return `
-      <div class="gallery-item" data-index="${i}">
-        <div class="gallery-inner">
-          <div class="gallery-frame-wrapper">
-            <div class="gallery-spotlight"></div>
-            <div class="gallery-frame">
-              <picture>
-                <source srcset="assets/optimized/${art.id}-sm.webp 800w, assets/optimized/${art.id}-md.webp 1400w, assets/optimized/${art.id}.webp 2600w" type="image/webp">
-                <source srcset="assets/optimized/${art.id}-sm.jpg 800w, assets/optimized/${art.id}-md.jpg 1400w, assets/optimized/${art.id}.jpg 2600w" type="image/jpeg">
-                <img src="assets/optimized/${art.id}.webp" alt="${art.en.title}" data-en-alt="${art.en.title}" data-ar-alt="${art.ar.title}" loading="lazy" width="2600" height="1800">
-              </picture>
-            </div>
-          </div>
-          <div class="gallery-info">
-            <h3 data-en="${art.en.title}" data-ar="${art.ar.title}">${art.en.title}</h3>
-            <p data-en="${art.en.objective}" data-ar="${art.ar.objective}">${art.en.objective}</p>
-          </div>
-        </div>
+  carouselCount = artworks.length;
+  cardAngle = 360 / carouselCount;
+
+  ring.innerHTML = artworks.map((art, i) => `
+    <div class="carousel-card" data-index="${i}" role="button" tabindex="0" aria-label="${art.en.title}">
+      <picture>
+        <source srcset="assets/optimized/${art.id}-sm.webp 800w, assets/optimized/${art.id}-md.webp 1400w" type="image/webp">
+        <source srcset="assets/optimized/${art.id}-sm.jpg 800w, assets/optimized/${art.id}-md.jpg 1400w" type="image/jpeg">
+        <img src="assets/optimized/${art.id}-sm.webp" alt="${art.en.title}" loading="lazy" width="800" height="540">
+      </picture>
+      <div class="carousel-card-label">
+        <h3>${art.en.title}</h3>
+        <span>${art.en.techniques.split(',')[0]}</span>
       </div>
-    `;
-  }).join('');
-
-  buildProgressDots(artworks.length);
+    </div>
+  `).join('');
 }
 
 // Skills section: Card grid instead of table
@@ -389,53 +366,250 @@ function buildSkills(matrix) {
   `).join('');
 }
 
-// ==================== GALLERY SCROLL DEPTH ====================
-let currentGalleryIndex = -1;
+// ==================== 3D CAROUSEL ====================
+let carouselAngle = 0;
+let carouselSpeed = 0.12;
+let carouselPaused = false;
+let isDragging = false;
+let dragStartX = 0;
+let dragStartAngle = 0;
+let lastDragX = 0;
+let dragVelocity = 0;
+let carouselCount = 0;
+let cardAngle = 0;
+let highlightedIndex = -1;
+let carouselAnimId = null;
+let dragMoved = false;
 
-function buildProgressDots(count) {
-  const container = document.getElementById('galleryProgress');
-  if (!container) return;
-  container.innerHTML = Array.from({ length: count }, (_, i) =>
-    `<div class="gallery-progress-dot" data-index="${i}"></div>`
-  ).join('');
-}
+function updateCarouselRadius() {
+  const scene = document.getElementById('carouselScene');
+  const ring = document.getElementById('carouselRing');
+  if (!scene || !ring || !carouselCount) return;
 
-function updateProgressDot(index) {
-  const dots = document.querySelectorAll('.gallery-progress-dot');
-  dots.forEach((dot, i) => {
-    dot.classList.toggle('active', i === index);
+  const w = window.innerWidth;
+  const cardW = ring.offsetWidth || 260;
+  const radius = Math.round((cardW / 2) / Math.tan(Math.PI / carouselCount));
+
+  ring.style.setProperty('--carousel-radius', radius + 'px');
+
+  ring.querySelectorAll('.carousel-card').forEach((card, i) => {
+    card.style.transform = `rotateY(${i * cardAngle}deg) translateZ(${radius}px)`;
   });
 }
 
-function initGalleryScrollDepth() {
-  if (prefersReducedMotion.matches) {
-    document.querySelectorAll('.gallery-item').forEach(el => el.classList.add('in-view'));
-    return;
+function tickCarousel() {
+  if (!carouselPaused && !isDragging) {
+    carouselAngle += carouselSpeed;
   }
 
-  const items = document.querySelectorAll('.gallery-item');
-  if (!items.length) return;
+  const ring = document.getElementById('carouselRing');
+  if (ring) {
+    ring.style.transform = `rotateY(${carouselAngle}deg)`;
+  }
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const idx = parseInt(entry.target.dataset.index, 10);
+  updateHighlight();
+  carouselAnimId = requestAnimationFrame(tickCarousel);
+}
 
-      if (entry.isIntersecting && entry.intersectionRatio > 0.15) {
-        entry.target.classList.add('in-view');
-        entry.target.classList.remove('depth-exit');
-        currentGalleryIndex = idx;
-        updateProgressDot(idx);
-      } else if (!entry.isIntersecting) {
-        entry.target.classList.remove('in-view');
-        entry.target.classList.add('depth-exit');
-      }
-    });
-  }, {
-    threshold: [0, 0.15, 0.5, 0.85],
-    rootMargin: '0px'
+function updateHighlight() {
+  const cards = document.querySelectorAll('.carousel-card');
+  if (!cards.length) return;
+
+  const normalized = ((carouselAngle % 360) + 360) % 360;
+  const frontIdx = Math.round(normalized / cardAngle) % carouselCount;
+
+  if (frontIdx !== highlightedIndex) {
+    if (highlightedIndex >= 0 && cards[highlightedIndex]) {
+      cards[highlightedIndex].classList.remove('highlighted');
+    }
+    if (cards[frontIdx]) {
+      cards[frontIdx].classList.add('highlighted');
+    }
+    highlightedIndex = frontIdx;
+  }
+}
+
+function initCarousel() {
+  const scene = document.getElementById('carouselScene');
+  if (!scene) return;
+
+  updateCarouselRadius();
+
+  if (prefersReducedMotion.matches) return;
+
+  // Pause on hover (desktop)
+  scene.addEventListener('pointerenter', () => {
+    if (!isDragging) carouselPaused = true;
+  });
+  scene.addEventListener('pointerleave', () => {
+    if (!isDragging) carouselPaused = false;
   });
 
-  items.forEach(item => observer.observe(item));
+  // Drag to spin
+  scene.addEventListener('pointerdown', onDragStart);
+  window.addEventListener('pointermove', onDragMove);
+  window.addEventListener('pointerup', onDragEnd);
+
+  // Click/tap to open detail
+  scene.addEventListener('click', (e) => {
+    if (dragMoved) return;
+    const card = e.target.closest('.carousel-card');
+    if (card) {
+      openDetail(parseInt(card.dataset.index, 10));
+    }
+  });
+
+  // Keyboard: Enter/Space to open detail
+  scene.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      const card = e.target.closest('.carousel-card');
+      if (card) {
+        e.preventDefault();
+        openDetail(parseInt(card.dataset.index, 10));
+      }
+    }
+  });
+
+  // Resize handler
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(updateCarouselRadius, 150);
+  });
+
+  // Close detail handlers
+  const closeBtn = document.getElementById('carouselDetailClose');
+  const backdrop = document.getElementById('carouselDetailBackdrop');
+  if (closeBtn) closeBtn.addEventListener('click', closeDetail);
+  if (backdrop) backdrop.addEventListener('click', closeDetail);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDetail();
+  });
+
+  // Swipe down to close detail (mobile)
+  let detailTouchStartY = 0;
+  const detail = document.getElementById('carouselDetail');
+  if (detail) {
+    detail.addEventListener('touchstart', (e) => {
+      detailTouchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    detail.addEventListener('touchend', (e) => {
+      const dy = e.changedTouches[0].clientY - detailTouchStartY;
+      if (dy > 80) closeDetail();
+    }, { passive: true });
+  }
+
+  // Start animation loop
+  tickCarousel();
+}
+
+function onDragStart(e) {
+  isDragging = true;
+  dragMoved = false;
+  dragStartX = e.clientX;
+  dragStartAngle = carouselAngle;
+  lastDragX = e.clientX;
+  dragVelocity = 0;
+  carouselPaused = true;
+  try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) { /* noop */ }
+}
+
+function onDragMove(e) {
+  if (!isDragging) return;
+  const dx = e.clientX - dragStartX;
+  if (Math.abs(dx) > 5) dragMoved = true;
+  carouselAngle = dragStartAngle + dx * 0.3;
+  dragVelocity = e.clientX - lastDragX;
+  lastDragX = e.clientX;
+}
+
+function onDragEnd() {
+  if (!isDragging) return;
+  isDragging = false;
+  carouselAngle += dragVelocity * 2;
+  carouselPaused = false;
+}
+
+function openDetail(index) {
+  const art = SITE_DATA.artworks[index];
+  if (!art) return;
+
+  const detail = document.getElementById('carouselDetail');
+  const imageContainer = document.getElementById('carouselDetailImage');
+  const infoContainer = document.getElementById('carouselDetailInfo');
+  if (!detail || !imageContainer || !infoContainer) return;
+
+  const lang = currentLang === 'ar' ? 'ar' : 'en';
+  const d = art[lang];
+
+  imageContainer.innerHTML = `
+    <picture>
+      <source srcset="assets/optimized/${art.id}-sm.webp 800w, assets/optimized/${art.id}-md.webp 1400w, assets/optimized/${art.id}.webp 2600w" type="image/webp">
+      <source srcset="assets/optimized/${art.id}-sm.jpg 800w, assets/optimized/${art.id}-md.jpg 1400w, assets/optimized/${art.id}.jpg 2600w" type="image/jpeg">
+      <img src="assets/optimized/${art.id}.webp" alt="${d.title}" width="2600" height="1800">
+    </picture>
+  `;
+
+  const mediumLabel = lang === 'ar' ? 'الوسيلة' : 'Medium';
+  const objectiveLabel = lang === 'ar' ? 'الهدف' : 'Objective';
+  const techniquesLabel = lang === 'ar' ? 'التقنيات' : 'Techniques';
+  const outcomeLabel = lang === 'ar' ? 'نتيجة التعلم' : 'Learning Outcome';
+
+  infoContainer.innerHTML = `
+    <h2 class="detail-title">${d.title}</h2>
+    <div class="detail-meta">
+      <span class="detail-tag">${mediumLabel}: ${d.techniques.split(',')[0].trim()}</span>
+      <span class="detail-tag">${index + 1} / ${SITE_DATA.artworks.length}</span>
+    </div>
+    <div class="detail-section">
+      <h4>${objectiveLabel}</h4>
+      <p>${d.objective}</p>
+    </div>
+    <div class="detail-section">
+      <h4>${techniquesLabel}</h4>
+      <p>${d.techniques}</p>
+    </div>
+    <div class="detail-section">
+      <h4>${outcomeLabel}</h4>
+      <p>${d.benefit}</p>
+    </div>
+  `;
+
+  carouselPaused = true;
+
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
+      detail.classList.add('open');
+      detail.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    });
+  } else {
+    detail.classList.add('open');
+    detail.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+}
+
+function closeDetail() {
+  const detail = document.getElementById('carouselDetail');
+  if (!detail || !detail.classList.contains('open')) return;
+
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
+      detail.classList.remove('open');
+      detail.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    });
+  } else {
+    detail.classList.remove('open');
+    detail.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  setTimeout(() => { carouselPaused = false; }, 500);
 }
 
 // ==================== BRUSH WRITING ANIMATION ====================
@@ -461,8 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initHeroCanvas();
   initBrushWriting();
-  initGalleryEffects();
-  initGalleryScrollDepth();
+  initCarousel();
 
   setLang('en');
 });
