@@ -328,54 +328,21 @@ function setText(id, en, ar) {
 }
 
 function buildCarousel(artworks) {
-  const ring = document.getElementById('mosaicRing');
-  if (!ring) return;
+  const grid = document.getElementById('galleryGrid');
+  if (!grid) return;
 
-  const isMobile = window.innerWidth <= 768;
-  const isTiny = window.innerWidth <= 480;
-
-  const ringW = ring.clientWidth || window.innerWidth;
-  const ringH = ring.clientHeight || 620;
-
-  const positions = [
-    { angle: 5,    dist: 0.38, w: 170, h: 225, rot: -4 },
-    { angle: 30,   dist: 0.44, w: 140, h: 185, rot: 3 },
-    { angle: 55,   dist: 0.40, w: 190, h: 250, rot: -2 },
-    { angle: 82,   dist: 0.48, w: 150, h: 200, rot: 6 },
-    { angle: 108,  dist: 0.36, w: 180, h: 240, rot: -5 },
-    { angle: 133,  dist: 0.46, w: 160, h: 210, rot: 2 },
-    { angle: 158,  dist: 0.42, w: 200, h: 260, rot: -3 },
-    { angle: 185,  dist: 0.47, w: 145, h: 195, rot: 7 },
-    { angle: 210,  dist: 0.39, w: 175, h: 230, rot: -6 },
-    { angle: 237,  dist: 0.45, w: 155, h: 205, rot: 4 },
-    { angle: 262,  dist: 0.50, w: 185, h: 245, rot: -7 },
-    { angle: 290,  dist: 0.41, w: 165, h: 215, rot: 1 },
-    { angle: 315,  dist: 0.47, w: 135, h: 180, rot: -8 },
-    { angle: 342,  dist: 0.43, w: 195, h: 255, rot: 5 },
-  ];
-
-  const scale = isTiny ? 0.55 : isMobile ? 0.7 : 1;
-
-  ring.innerHTML = artworks.map((art, i) => {
-    const p = positions[i % positions.length];
-    const rad = (p.angle * Math.PI) / 180;
-    const radiusX = ringW * 0.42;
-    const radiusY = ringH * 0.40;
-    const x = Math.cos(rad) * p.dist * radiusX;
-    const y = Math.sin(rad) * p.dist * radiusY;
-    const w = Math.round(p.w * scale);
-    const h = Math.round(p.h * scale);
-
+  grid.innerHTML = artworks.map((art, i) => {
     return `
-      <div class="mosaic-item" data-index="${i}" role="button" tabindex="0"
-           aria-label="${art.en.title}"
-           style="--item-x:${x}px;--item-y:${y}px;--item-w:${w}px;--item-h:${h}px;--item-rot:${p.rot}deg;--item-w-m:${Math.round(w * 0.75)}px;--item-h-m:${Math.round(h * 0.75)}px;">
-        <picture>
-          <source srcset="assets/optimized/${art.id}-sm.webp 800w, assets/optimized/${art.id}-md.webp 1400w" type="image/webp">
-          <source srcset="assets/optimized/${art.id}-sm.jpg 800w, assets/optimized/${art.id}-md.jpg 1400w" type="image/jpeg">
-          <img src="assets/optimized/${art.id}-sm.webp" alt="${art.en.title}" loading="lazy" width="${w}" height="${Math.round(h * 0.72)}">
-        </picture>
-        <div class="mosaic-item-label">
+      <div class="gallery-card reveal" data-index="${i}" role="button" tabindex="0"
+           aria-label="${art.en.title}">
+        <div class="gallery-card-image">
+          <picture>
+            <source srcset="assets/optimized/${art.id}-sm.webp 800w, assets/optimized/${art.id}-md.webp 1400w" type="image/webp">
+            <source srcset="assets/optimized/${art.id}-sm.jpg 800w, assets/optimized/${art.id}-md.jpg 1400w" type="image/jpeg">
+            <img src="assets/optimized/${art.id}-sm.webp" alt="${art.en.title}" loading="lazy" width="400" height="300">
+          </picture>
+        </div>
+        <div class="gallery-card-label">
           <h3>${art.en.title}</h3>
           <span>${art.en.techniques.split(',')[0]}</span>
         </div>
@@ -398,60 +365,28 @@ function buildSkills(matrix) {
   `).join('');
 }
 
-// ==================== SCATTERED MOSAIC ====================
-let mosaicPaused = false;
-let dragMoved = false;
-
+// ==================== GALLERY ====================
 function initMosaic() {
-  const viewport = document.getElementById('mosaicViewport');
-  if (!viewport) return;
+  const grid = document.getElementById('galleryGrid');
+  if (!grid) return;
 
-  if (prefersReducedMotion.matches) return;
-
-  let touchTimeout;
-
-  // Pause on hover (desktop)
-  viewport.addEventListener('pointerenter', () => {
-    mosaicPaused = true;
-  });
-  viewport.addEventListener('pointerleave', () => {
-    mosaicPaused = false;
-    viewport.classList.remove('touch-active');
-  });
-
-  // Touch support (mobile): tap to activate, tap elsewhere to deactivate
-  viewport.addEventListener('touchstart', () => {
-    viewport.classList.add('touch-active');
-    clearTimeout(touchTimeout);
-  }, { passive: true });
-
-  viewport.addEventListener('touchend', () => {
-    touchTimeout = setTimeout(() => {
-      viewport.classList.remove('touch-active');
-    }, 2000);
-  }, { passive: true });
-
-  // Click/tap to open detail
-  viewport.addEventListener('click', (e) => {
-    if (dragMoved) { dragMoved = false; return; }
-    const item = e.target.closest('.mosaic-item');
-    if (item) {
-      openDetail(parseInt(item.dataset.index, 10));
+  grid.addEventListener('click', (e) => {
+    const card = e.target.closest('.gallery-card');
+    if (card) {
+      openDetail(parseInt(card.dataset.index, 10));
     }
   });
 
-  // Keyboard: Enter/Space to open detail
-  viewport.addEventListener('keydown', (e) => {
+  grid.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
-      const item = e.target.closest('.mosaic-item');
-      if (item) {
+      const card = e.target.closest('.gallery-card');
+      if (card) {
         e.preventDefault();
-        openDetail(parseInt(item.dataset.index, 10));
+        openDetail(parseInt(card.dataset.index, 10));
       }
     }
   });
 
-  // Close detail handlers
   const closeBtn = document.getElementById('mosaicDetailClose');
   const backdrop = document.getElementById('mosaicDetailBackdrop');
   if (closeBtn) closeBtn.addEventListener('click', closeDetail);
@@ -461,7 +396,6 @@ function initMosaic() {
     if (e.key === 'Escape') closeDetail();
   });
 
-  // Swipe down to close detail (mobile)
   let detailTouchStartY = 0;
   const detail = document.getElementById('mosaicDetail');
   if (detail) {
@@ -473,13 +407,6 @@ function initMosaic() {
       if (dy > 80) closeDetail();
     }, { passive: true });
   }
-
-  // Rebuild on resize (debounced)
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => buildCarousel(SITE_DATA.artworks), 200);
-  });
 }
 
 function openDetail(index) {
@@ -528,8 +455,6 @@ function openDetail(index) {
     </div>
   `;
 
-  mosaicPaused = true;
-
   if (document.startViewTransition) {
     document.startViewTransition(() => {
       detail.classList.add('open');
@@ -561,7 +486,6 @@ function closeDetail() {
     document.body.style.overflow = '';
   }
 
-  setTimeout(() => { mosaicPaused = false; }, 500);
 }
 
 // ==================== BRUSH WRITING ANIMATION ====================
