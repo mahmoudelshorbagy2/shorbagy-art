@@ -697,11 +697,16 @@ section[id] {
   text-align: center;
   font-family: var(--font-display);
   font-size: clamp(1rem, 2vw, 1.3rem);
-  color: var(--text-secondary);
+  color: var(--text);
   font-style: italic;
   max-width: 65ch;
-  margin: 0 auto;
+  margin: var(--space-lg) auto 0;
   line-height: 1.8;
+  padding: var(--space-md) var(--space-xl);
+  border: 1.5px solid var(--gold);
+  border-radius: 60px;
+  background: var(--gold-dim);
+  box-shadow: 0 4px 24px var(--gold-glow);
 }
 
 /* ==================== CONTACT / FOOTER ==================== */
@@ -905,6 +910,11 @@ section[id] {
     grid-template-columns: 1fr;
   }
 
+  .matrix-closing {
+    padding: var(--space-md) var(--space-lg);
+    border-radius: 32px;
+  }
+
   .lang-toggle {
     top: var(--space-sm);
     right: var(--space-sm);
@@ -970,5 +980,11 @@ section[id] {
     grid-template-columns: 1fr;
     gap: var(--space-md);
     padding: 0 var(--space-sm);
+  }
+
+  .matrix-closing {
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 24px;
+    font-size: 0.95rem;
   }
 }
