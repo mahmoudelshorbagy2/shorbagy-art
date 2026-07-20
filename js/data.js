@@ -14,11 +14,11 @@ const SITE_DATA = {
   about: {
     en: {
       title: "About Me",
-      body: "A recent graduate in Art Education with a deep passion for multi-disciplinary arts instruction. Trained across a comprehensive spectrum of fine arts, heritage crafts, and contemporary design, from drawing, painting, and ceramics to textiles, woodwork, leathercraft, and mixed media. This breadth of training reflects not a lack of focus, but a deliberate commitment to becoming a versatile, resourceful educator capable of reaching every type of learner. Equipped with strong academic foundations, hands-on studio experience, and an unwavering dedication to making art education both rigorous and transformative."
+      body: "Teaching is where my real passion lives — sharing knowledge and skill with students in a way that's clear, engaging, and easy to connect with. I believe a great educator isn't just someone who has mastered a craft, but someone who can break it down patiently and make every student feel capable of creating. I'm committed to constantly growing as a teacher, refining how I explain, demonstrate, and connect with students of every background and learning style. My training spans a wide range of fine arts, heritage crafts, and contemporary design — from drawing and ceramics to textiles, woodwork, and mixed media — giving me a versatile toolkit I draw on to reach every kind of learner and build a classroom where curiosity and confidence grow together."
     },
     ar: {
       title: "نبذة عني",
-      body: "خريج حديث في قسم التربية الفنية، يحمل شغفاً عميقاً بالتعليم متعدد التخصصات في الفنون والحرف. تدرّبت على نطاق شامل يشمل الفنون التشكيلية والحرف التراثية والتصميم المعاصر، من الرسم واللوحة والخزف إلى النسيج والنجارة وعمل الجلود والوسائط المختلعة. هذا التنوع في التدريب ليس انعكاساً لافتقار للتركيز، بل التزام مدروس بأن أكون معلماً مرناً ومجداً قادر على الوصول إلى كل أنواع المتعلمين. أحمل أساساً أكاديمياً قوياً وخبرة عملية في الاستوديو وتفانياً لا يتزعزع في جعل التعليم الفني صارماً ومُحولاً للحياة في آن واحد."
+      body: "شغفي الحقيقي هو التدريس؛ إني أقدر أوصّل المعرفة والمهارة للطلاب بأسلوب واضح وشيّق يخليهم يحبوا التعلم. بؤمن إن المعلم الحقيقي مش بس اللي بيتقن الفن، لكن اللي بيقدر يبسّطه ويوصّله بصبر، ويخلّي كل طالب يحس إنه قادر على الإبداع. باهتم دايمًا بتطوير نفسي كمعلم، وتحسين أسلوبي في الشرح والتفاعل مع الطلاب باختلاف مستوياتهم وطرق تفكيرهم. تدرّبت على نطاق واسع من الفنون التشكيلية والحرف التراثية والتصميم المعاصر، من الرسم والخزف إلى النسيج والنجارة والوسائط المختلطة، وده بيديني أدوات متنوعة أقدر استخدمها عشان أوصل لكل أنواع المتعلمين، وأبني فصل دراسي قائم على الفضول والثقة بالنفس."
     }
   },
   vision: {
@@ -53,15 +53,15 @@ const SITE_DATA = {
       id: "artwork-02",
       en: {
         title: "Architectural Perspective & Geometry",
-        objective: "Understanding spatial depth and geometric precision in structural design.",
-        techniques: "One-point and two-point perspective, vanishing points, and radial symmetry within structural design.",
-        benefit: "Students learn the cultural significance of geometric design in Islamic engineering and architectural traditions."
+        objective: "Teaching students to see structure before they see decoration — how depth, proportion, and vanishing points shape the built world around them.",
+        techniques: "Guided practice in one-point and two-point perspective, geometric construction, and the mathematical order behind Islamic architectural pattern.",
+        benefit: "Students trade guesswork for method. Once they can read a structure geometrically, every drawing after it becomes more confident and more precise."
       },
       ar: {
         title: "المنظور الهندسي والمعماري",
-        objective: "فهم العمق المكاني والدقة الهندسية في التصميم الهيكلي.",
-        techniques: "المنظور أحادي وثنائي النقطة، ونقاط التلاشي، والتناظر الإشعاعي في التصميم الهيكلي.",
-        benefit: "يتعلم الطلاب الأهمية الثقافية للتصميم الهندسي في الهندسة الإسلامية والتراث المعماري."
+        objective: "تعليم الطلاب إزاي يشوفوا البنية قبل الزخرفة؛ إزاي العمق والتناسب ونقاط التلاشي بيشكّلوا العالم اللي حواليهم.",
+        techniques: "تدريب موجّه على المنظور أحادي وثنائي النقطة، والبناء الهندسي، والنظام الرياضي اللي وراء الزخرفة المعمارية الإسلامية.",
+        benefit: "الطلاب بيستبدلوا التخمين بمنهج واضح. بمجرد ما يقدروا يقرأوا البنية هندسيًا، كل رسمة بعد كده بتبقى أكتر ثقة ودقة."
       }
     },
     {
@@ -232,31 +232,31 @@ const SITE_DATA = {
     {
       id: "artwork-14",
       en: {
-        title: "Alternative Mediums: Mosaics & Textiles",
-        objective: "Ensuring comprehensive understanding through diverse material exploration.",
-        techniques: "Mosaic tile arrangement, textile pattern design, and mixed-media integration.",
-        benefit: "Brings together all learned skills into a unified artistic practice, demonstrating mastery across multiple mediums and creative approaches."
+        title: "Textile Arts & Pattern Design",
+        objective: "Introducing fabric and thread as a legitimate design medium, where pattern, texture, and repetition become a language of their own.",
+        techniques: "Textile pattern design, fabric manipulation, and mixed-media integration between cloth and other materials.",
+        benefit: "Students discover a tactile, wearable form of design — learning how rhythm and repetition in pattern can carry meaning and cultural identity."
       },
       ar: {
-        title: "وسائط بديلة: الفسيفساء والمنسوجات",
-        objective: "ضمان فهم شامل من خلال استكشاف المواد المتنوعة.",
-        techniques: "ترتيب بلاط الفسيفساء، وتصميم أنماط المنسوجات، ودمج الوسائط المختلعة.",
-        benefit: "يجمع جميع المهارات المكتسبة في ممارسة فنية موحدة، ويُظهر الإتقان عبر وسائط ومناهج إبداعية متعددة."
+        title: "الفنون النسيجية وتصميم الأنماط",
+        objective: "تقديم القماش والخيط كوسيط تصميم أصيل، حيث يتحول النمط والملمس والتكرار إلى لغة بصرية قائمة بذاتها.",
+        techniques: "تصميم أنماط المنسوجات، والتعامل مع الأقمشة، ودمجها مع وسائط أخرى.",
+        benefit: "يكتشف الطلاب شكلاً حسيًا وقابلاً للارتداء من التصميم، ويتعلموا إزاي الإيقاع والتكرار في النمط ممكن يحملوا معنى وهوية ثقافية."
       }
     },
     {
       id: "artwork-15",
       en: {
         title: "Comprehensive Portfolio Synthesis",
-        objective: "Demonstrating the full spectrum of artistic and technical skills acquired.",
-        techniques: "Integration of multiple disciplines into a cohesive body of work.",
-        benefit: "Showcases the transformative journey from foundational observation to advanced multi-disciplinary artistry."
+        objective: "Bringing every discipline the students trained in together into one cohesive body of work.",
+        techniques: "Cross-disciplinary integration — drawing, sculpture, applied crafts, and design brought together under one visual language.",
+        benefit: "Students see their own growth laid out in front of them — a tangible record of how each skill built on the one before it."
       },
       ar: {
         title: "تجميع المعرض الشامل",
-        objective: "إظهار الطيف الكامل للفنيات والمهارات المكتسبة.",
-        techniques: "دمج تخصصات متعددة في مجموعة عمل متماسكة.",
-        benefit: "يُبرز الرحلة التحولية من الملاحظة الأساسية إلى الإبداع متعدد التخصصات المتقدم."
+        objective: "جمع كل التخصصات اللي اتدرب عليها الطلاب في عمل فني واحد متكامل.",
+        techniques: "دمج متعدد التخصصات؛ رسم ونحت وحرف تطبيقية وتصميم كلها تحت لغة بصرية واحدة.",
+        benefit: "الطلاب بيشوفوا تطورهم بنفسهم قدامهم؛ سجل ملموس لإزاي كل مهارة بنت على اللي قبلها."
       }
     }
   ],
@@ -268,7 +268,7 @@ const SITE_DATA = {
         { domain: "Foundational 2D (Drawing/Painting)", skills: "Spatial Logic, Color Theory, Art History Deconstruction" },
         { domain: "3D Sculpting (Clay/Ceramics)", skills: "Tactile Sensitivity, Structural Integrity, Mass & Gravity Calculation" },
         { domain: "Applied Crafts (Wood/Leather/Metal)", skills: "Functional Design, Tool Safety, Material Resistance, Heritage Appreciation" },
-        { domain: "Mixed Media (Mosaics/Quilling)", skills: "Differentiated Instruction, Mindfulness, Part-to-Whole Assembly" }
+        { domain: "Mixed Media (Textiles/Quilling)", skills: "Differentiated Instruction, Mindfulness, Part-to-Whole Assembly" }
       ]
     },
     ar: {
@@ -278,7 +278,7 @@ const SITE_DATA = {
         { domain: "الرسوم ثنائية البُعد (الرسم/اللوحة)", skills: "التفكير المكاني، نظرية اللون، تفكيك تاريخ الفن" },
         { domain: "النحت ثلاثي الأبعاد (الطين/الخزف)", skills: "الحساسية الحسية، السلامة الهيكلية، حساب الكتلة والجاذبية" },
         { domain: "الحرف التطبيقية (خشب/جلد/معدن)", skills: "التصميم الوظيفي، سلامة الأدوات، مقاومة المادة، تقدير التراث" },
-        { domain: "الوسائط المختلعة (فسيفساء/لف ورق)", skills: "التعليم المُتمايز، الوعي، التجميع من الأجزاء إلى الكل" }
+        { domain: "الوسائط المختلطة (منسوجات/لف ورق)", skills: "التعليم المُتمايز، الوعي، التجميع من الأجزاء إلى الكل" }
       ]
     }
   },
