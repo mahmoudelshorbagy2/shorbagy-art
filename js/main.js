@@ -337,7 +337,7 @@ function buildCarousel(artworks) {
   grid.innerHTML = artworks.map((art, i) => {
     const d = art[lang];
     return `
-      <div class="gallery-card reveal" data-index="${i}" role="button" tabindex="0"
+      <div class="gallery-card reveal visible" data-index="${i}" role="button" tabindex="0"
            aria-label="${d.title}">
         <div class="gallery-card-image">
           <picture>
