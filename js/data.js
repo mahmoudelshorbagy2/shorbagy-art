@@ -52,16 +52,16 @@ const SITE_DATA = {
     {
       id: "artwork-02",
       en: {
-        title: "Architectural Perspective & Geometry",
-        objective: "Teaching students to see structure before they see decoration — how depth, proportion, and vanishing points shape the built world around them.",
-        techniques: "Guided practice in one-point and two-point perspective, geometric construction, and the mathematical order behind Islamic architectural pattern.",
-        benefit: "Students trade guesswork for method. Once they can read a structure geometrically, every drawing after it becomes more confident and more precise."
+        title: "Landscape & Natural Observation",
+        objective: "Training students to really look at nature — how light shifts across a field, how color softens and cools with distance, and how a single tree can anchor an entire composition.",
+        techniques: "Layered color blocking for atmospheric depth, tonal gradation from foreground to horizon, and expressive brushwork to capture natural textures like foliage and grass.",
+        benefit: "Students build patience and observational discipline, learning to translate the calm and scale of open nature onto canvas — and grow a quieter, more attentive relationship with the world around them."
       },
       ar: {
-        title: "المنظور الهندسي والمعماري",
-        objective: "تعليم الطلاب إزاي يشوفوا البنية قبل الزخرفة؛ إزاي العمق والتناسب ونقاط التلاشي بيشكّلوا العالم اللي حواليهم.",
-        techniques: "تدريب موجّه على المنظور أحادي وثنائي النقطة، والبناء الهندسي، والنظام الرياضي اللي وراء الزخرفة المعمارية الإسلامية.",
-        benefit: "الطلاب بيستبدلوا التخمين بمنهج واضح. بمجرد ما يقدروا يقرأوا البنية هندسيًا، كل رسمة بعد كده بتبقى أكتر ثقة ودقة."
+        title: "المناظر الطبيعية والملاحظة البصرية",
+        objective: "تدريب الطلاب إزاي يلاحظوا الطبيعة بعمق؛ إزاي الضوء بيتغير على المساحات الواسعة، وإزاي الألوان بتخف وتبرد كل ما بعدت المسافة، وإزاي شجرة واحدة ممكن تكون مركز اللوحة كلها.",
+        techniques: "طبقات لونية لخلق عمق جوي، وتدرج تدريجي من المقدمة للأفق، وضربات فرشاة تعبيرية لإظهار ملامس طبيعية زي العشب وأوراق الشجر.",
+        benefit: "الطلاب بيبنوا صبر ودقة ملاحظة، ويتعلموا إزاي ينقلوا هدوء واتساع الطبيعة على الكانفاس، وبيكتسبوا علاقة أهدى وأكتر انتباهًا بالعالم من حواليهم."
       }
     },
     {
@@ -263,7 +263,7 @@ const SITE_DATA = {
   skillsMatrix: {
     en: {
       title: "Cognitive & Motor Skill Development Matrix",
-      closing: "A truly comprehensive art department does not rely on a single medium. It requires a curriculum engineered to reach every type of cognitive learner.",
+      closing: "A truly comprehensive art department does not rely on a single medium. It requires a thoughtfully designed approach to reach every kind of student.",
       rows: [
         { domain: "Foundational 2D (Drawing/Painting)", skills: "Spatial Logic, Color Theory, Art History Deconstruction" },
         { domain: "3D Sculpting (Clay/Ceramics)", skills: "Tactile Sensitivity, Structural Integrity, Mass & Gravity Calculation" },
@@ -273,7 +273,7 @@ const SITE_DATA = {
     },
     ar: {
       title: "مصفوفة تطوير المهارات المعرفية والحركية",
-      closing: "لا يعتمد قسم الفنون الشامل حقاً على وسيلة واحدة. بل يتطلب منهجاً مُهندساً للوصول إلى كل أنواع المتعلمين المعرفيين.",
+      closing: "لا يعتمد قسم الفنون الشامل حقاً على وسيلة واحدة. بل يتطلب منهجاً مَدْرُوسًا للوصول إلى كل أنواع الطلاب.",
       rows: [
         { domain: "الرسوم ثنائية البُعد (الرسم/اللوحة)", skills: "التفكير المكاني، نظرية اللون، تفكيك تاريخ الفن" },
         { domain: "النحت ثلاثي الأبعاد (الطين/الخزف)", skills: "الحساسية الحسية، السلامة الهيكلية، حساب الكتلة والجاذبية" },

@@ -694,19 +694,23 @@ section[id] {
 }
 
 .matrix-closing {
+  display: block;
+  width: fit-content;
+  max-width: min(90%, 65ch);
   text-align: center;
   font-family: var(--font-display);
   font-size: clamp(1rem, 2vw, 1.3rem);
   color: var(--text);
   font-style: italic;
-  max-width: 65ch;
   margin: var(--space-lg) auto 0;
   line-height: 1.8;
-  padding: var(--space-md) var(--space-xl);
-  border: 1.5px solid var(--gold);
-  border-radius: 60px;
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-lg);
   background: var(--gold-dim);
-  box-shadow: 0 4px 24px var(--gold-glow);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* ==================== CONTACT / FOOTER ==================== */
@@ -912,7 +916,7 @@ section[id] {
 
   .matrix-closing {
     padding: var(--space-md) var(--space-lg);
-    border-radius: 32px;
+    border-radius: 16px;
   }
 
   .lang-toggle {
@@ -984,7 +988,7 @@ section[id] {
 
   .matrix-closing {
     padding: var(--space-sm) var(--space-md);
-    border-radius: 24px;
+    border-radius: 12px;
     font-size: 0.95rem;
   }
 }
