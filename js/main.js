@@ -37,6 +37,7 @@ function initLangToggle() {
     setTimeout(() => {
       const newLang = currentLang === 'en' ? 'ar' : 'en';
       setLang(newLang);
+      buildCarousel(SITE_DATA.artworks);
       buildSkills(SITE_DATA.skillsMatrix);
       toggle.classList.remove('flipping');
     }, 200);
@@ -331,20 +332,23 @@ function buildCarousel(artworks) {
   const grid = document.getElementById('galleryGrid');
   if (!grid) return;
 
+  const lang = currentLang === 'ar' ? 'ar' : 'en';
+
   grid.innerHTML = artworks.map((art, i) => {
+    const d = art[lang];
     return `
       <div class="gallery-card reveal" data-index="${i}" role="button" tabindex="0"
-           aria-label="${art.en.title}">
+           aria-label="${d.title}">
         <div class="gallery-card-image">
           <picture>
             <source srcset="assets/optimized/${art.id}-sm.webp 800w, assets/optimized/${art.id}-md.webp 1400w" type="image/webp">
             <source srcset="assets/optimized/${art.id}-sm.jpg 800w, assets/optimized/${art.id}-md.jpg 1400w" type="image/jpeg">
-            <img src="assets/optimized/${art.id}-sm.webp" alt="${art.en.title}" loading="lazy" width="400" height="300">
+            <img src="assets/optimized/${art.id}-sm.webp" alt="${d.title}" loading="lazy" width="400" height="300">
           </picture>
         </div>
         <div class="gallery-card-label">
-          <h3>${art.en.title}</h3>
-          <span>${art.en.techniques.split(',')[0]}</span>
+          <h3>${d.title}</h3>
+          <span>${d.techniques.split(',')[0]}</span>
         </div>
       </div>
     `;
